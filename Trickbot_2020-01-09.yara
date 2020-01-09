@@ -1,7 +1,7 @@
 import "hash"
 import "pe"
 
-rule RichHash{
+rule Trickbot_RichHash{
 
     meta:
         description = "Trickbot Richhash signature"
