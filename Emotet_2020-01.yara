@@ -7,7 +7,7 @@ rule Emotet_RichHash_2020_01{
         description = "Emotet Richhash signatures found in 2020-01"
         reference = "URLHaus links"
         author = "@Pro_Integritate"
-        date = "2020-01-09"
+        date = "2020-01-10"
         maltype = "Bot/Stealer/Trojan"
 
     condition:
