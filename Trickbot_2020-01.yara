@@ -7,7 +7,7 @@ rule Trickbot_RichHash_2020_01{
         description = "Trickbot Richhash signature found in 2020-01"
         reference = "URLHaus links"
         author = "@Pro_Integritate"
-        date = "2020-01-10"
+        date = "2020-01-11"
         maltype = "Bot/Stealer/Trojan"
 
     condition:
@@ -19,7 +19,9 @@ rule Trickbot_RichHash_2020_01{
 	 hash.md5(pe.rich_signature.clear_data) == "39e7e4a426dc855e00db64450b76813b" or
 	 hash.md5(pe.rich_signature.clear_data) == "4de464f6047ee0ac6488dff938afe077" or
 	 hash.md5(pe.rich_signature.clear_data) == "5f62d61c76dacfaafc1e1cfb8261245f" or
+	 hash.md5(pe.rich_signature.clear_data) == "a0a4a043bbec0a087cc69712c79faf2c" or
 	 hash.md5(pe.rich_signature.clear_data) == "c3640cf13baf9e781aa01038c09f9052" or
-	 hash.md5(pe.rich_signature.clear_data) == "cba790c0bfcb514df5ac49f47b49c34a")
-
+	 hash.md5(pe.rich_signature.clear_data) == "cba790c0bfcb514df5ac49f47b49c34a" or
+	 hash.md5(pe.rich_signature.clear_data) == "d27dccdb415411cb200e50715a72ddfd")
 }
+
