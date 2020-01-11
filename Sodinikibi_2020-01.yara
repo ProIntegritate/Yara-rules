@@ -1,7 +1,7 @@
 import "hash"
 import "pe"
 
-rule Sodinokibi{
+rule Sodinokibi_Payload{
 
     meta:
         description = "Sodinokibi/REvil signature (payload)."
