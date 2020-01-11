@@ -69,7 +69,7 @@ rule Sodinokibi_Loader{
         $string38 = "FromBase64String" nocase
 
     condition:
-	35 of ($string*) // 2020-01-11 (11 samples)
+	35 of ($string*) // 2020-01-11 (10 samples)
 
 }
 
