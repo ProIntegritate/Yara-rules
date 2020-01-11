@@ -16,7 +16,7 @@ rule Sodinokibi_Payload{
     condition:
 	all of ($string*) and 
 	uint16(0x00) == 0x5a4d and
-	(hash.md5(pe.rich_signature.clear_data) == "b25cffe5d8f5190aa58ab8fad74e8066") // 2020-01-11 (8 samples)
+	(hash.md5(pe.rich_signature.clear_data) == "b25cffe5d8f5190aa58ab8fad74e8066") // 2020-01-11 (10 samples)
 
 }
 
