@@ -6,17 +6,24 @@ rule Sodinokibi_Payload{
     meta:
         description = "Sodinokibi/REvil signature (payload)"
         author = "@Pro_Integritate"
-        date = "2020-01-11"
+        date = "2020-01-12"
         maltype = "Ransomware"
 
     strings:
+
+	// Compressed variant
         $string1 = "expand 32-byte"
         $string2 = "expand 16-byte"
 
+	// Uncompressed variant
+	$string3 = "kwvhrdibgmmpkhkidrby4mccwqpds5za6uo2thcw5gz75qncv7rbhyad.onion"
+
     condition:
-	all of ($string*) and 
+	($string1 and $string2 or $string3) and	
 	uint16(0x00) == 0x5a4d and
-	(hash.md5(pe.rich_signature.clear_data) == "b25cffe5d8f5190aa58ab8fad74e8066") // 2020-01-11 (10 samples)
+	(hash.md5(pe.rich_signature.clear_data) == "b25cffe5d8f5190aa58ab8fad74e8066" or
+	 hash.md5(pe.rich_signature.clear_data) == "7d5f2a8d9c84d114b7886faa24a587e2")
+	// (Based on 11 samples)
 
 }
 
@@ -69,7 +76,7 @@ rule Sodinokibi_Loader{
         $string38 = "FromBase64String" nocase
 
     condition:
-	35 of ($string*) // 2020-01-11 (10 samples)
+	35 of ($string*) // (Based on 11 samples)
 
 }
 
