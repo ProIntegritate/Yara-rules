@@ -1,13 +1,14 @@
+// 2020-01-13: Emotet
+
 import "hash"
 import "pe"
 
-rule Emotet_RichHash_2020_01{
+rule Emotet_RichHash{
 
     meta:
-        description = "Emotet Richhash signatures found in 2020-01"
-        reference = "URLHaus links"
+        description = "Emotet Richhash signatures"
+        reference = "URLHaus links + Downloads (i.e. AAR)"
         author = "@Pro_Integritate"
-        date = "2020-01-10"
         maltype = "Bot/Stealer/Trojan"
 
     condition:
@@ -26,6 +27,6 @@ rule Emotet_RichHash_2020_01{
 	 hash.md5(pe.rich_signature.clear_data) == "db29f940bfa4b5d0e4e8ed57e158c90c" or
 	 hash.md5(pe.rich_signature.clear_data) == "e509d6c1334839bb4014a4dae788fb89" or
 	 hash.md5(pe.rich_signature.clear_data) == "eb785e618d99684f278df42ffaefab04" or
-	 hash.md5(pe.rich_signature.clear_data) == "f475be015099be2ea9bf3cc159f5dc99")
-
+	 hash.md5(pe.rich_signature.clear_data) == "f475be015099be2ea9bf3cc159f5dc99" or
+	 hash.md5(pe.rich_signature.clear_data) == "91b4d1d1ffc542b4a8c0e78b3b1798df")
 }
