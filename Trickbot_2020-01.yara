@@ -1,13 +1,14 @@
+// 2020-01-13: Trickbot
+
 import "hash"
 import "pe"
 
-rule Trickbot_RichHash_2020_01{
+rule Trickbot_RichHash{
 
     meta:
-        description = "Trickbot Richhash signature found in 2020-01"
-        reference = "URLHaus links"
+        description = "Trickbot Richhash signatures"
+        reference = "URLHaus links + Downloads (i.e. AAR)"
         author = "@Pro_Integritate"
-        date = "2020-01-11"
         maltype = "Bot/Stealer/Trojan"
 
     condition:
@@ -22,6 +23,7 @@ rule Trickbot_RichHash_2020_01{
 	 hash.md5(pe.rich_signature.clear_data) == "a0a4a043bbec0a087cc69712c79faf2c" or
 	 hash.md5(pe.rich_signature.clear_data) == "c3640cf13baf9e781aa01038c09f9052" or
 	 hash.md5(pe.rich_signature.clear_data) == "cba790c0bfcb514df5ac49f47b49c34a" or
-	 hash.md5(pe.rich_signature.clear_data) == "d27dccdb415411cb200e50715a72ddfd")
+	 hash.md5(pe.rich_signature.clear_data) == "d27dccdb415411cb200e50715a72ddfd" or
+	 hash.md5(pe.rich_signature.clear_data) == "0a724400988576e8a48c3eab3e0956bd")
 }
 
