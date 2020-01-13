@@ -1,4 +1,4 @@
-// 2020-01-12 - File ID Yara rules. 
+// 2020-01-13 - File ID Yara rules. 
 
 import "hash"
 import "pe"
@@ -338,7 +338,6 @@ rule Batch_Script{
 	$string4 = "start "
     condition:
 	any of ($string*)
-	
 }
 
 rule Bash_Script{
@@ -348,6 +347,10 @@ rule Bash_Script{
 	$string
 }
 
-// PEM_Certificate 
-// 2D 2D 2D 2D 2D 42 45 47 49 4E 20 43 45 52 54 49 46 49 43 41 54 45 2D 2D 2D 2D 2D 0D 0A 
-
+rule PEM_Certificate{
+    strings:
+	$string1 = "-----BEGIN CERTIFICATE-----"
+	$string2 = "-----END CERTIFICATE-----"
+    condition:
+	all of ($string*)
+}
