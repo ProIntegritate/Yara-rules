@@ -30,6 +30,7 @@ rule Emotet_RichHash{
 	 hash.md5(pe.rich_signature.clear_data) == "f475be015099be2ea9bf3cc159f5dc99" or
 	 hash.md5(pe.rich_signature.clear_data) == "91b4d1d1ffc542b4a8c0e78b3b1798df" or
 	 hash.md5(pe.rich_signature.clear_data) == "04493e34d9ca943a968b8a849953d298" or
-	 hash.md5(pe.rich_signature.clear_data) == "2f59279dc43165b64e02ccc5a80c1594")
-
+	 hash.md5(pe.rich_signature.clear_data) == "2f59279dc43165b64e02ccc5a80c1594" or
+	 hash.md5(pe.rich_signature.clear_data) == "b2d4ca17618d0a548ead1e7212be9e28")
+	
 }
