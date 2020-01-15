@@ -1,5 +1,5 @@
 # Yara-rules
-Yara rules for various malware.
+Yara rules for various malware and security related stuff.
 
 *Disclaimer: These are not all inclusive that will catch everything, it will only catch those samples that they are built for.*
 
