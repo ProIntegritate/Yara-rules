@@ -1,4 +1,4 @@
-// Last updated: 14:44 2020-01-17
+// Last updated: 14:47 2020-01-17
 
 rule PHP_Webshell{
         meta:
@@ -7,8 +7,8 @@ rule PHP_Webshell{
                 maltype = "Webshell"
 
         strings:
-                $generic1 = "?php"
-                $generic2 = "eval"
+                $generic1 = "?php" nocase
+                $generic2 = "eval" nocase
                 $phpwebshell1 = "shell_exec" nocase
 
                 $phpwebshell2 = "exec" nocase
@@ -38,10 +38,10 @@ rule ASP_Webshell{
 		$generic1 = "process" nocase
 		$generic2 = "redirectStandard" nocase
 
-		$io1 = "file"
-		$io2 = "directory"
-		$io3 = "folder"
-		$io4 = "bucket"
+		$io1 = "file" nocase
+		$io2 = "directory" nocase
+		$io3 = "folder" nocase
+		$io4 = "bucket" nocase
 
         condition:
                 all of ($asp*) and any of ($exec*) and any of ($generic*) and any of ($io*)
