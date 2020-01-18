@@ -1,5 +1,6 @@
 // Last update: 08:57 2020-01-18
 // Author: "@Pro_Integritate"
+// Should be used to give you a sorta-idea of what a file does.
 
 import "hash"
 import "pe"
