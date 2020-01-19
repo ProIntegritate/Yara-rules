@@ -1,4 +1,4 @@
-// 2020-01-13: Sodinokibi (Based on 96 samples)
+// Last updated: 07:31 2020-01-19
 
 import "hash"
 import "pe"
@@ -7,6 +7,7 @@ rule Sodinokibi_Payload{
 
     meta:
         description = "Sodinokibi/REvil signature (payload)"
+        reference = "URLHaus links + Downloads (i.e. AAR)"
         author = "@Pro_Integritate"
         maltype = "Ransomware"
 
@@ -32,7 +33,11 @@ rule Sodinokibi_Payload{
 	(hash.md5(pe.rich_signature.clear_data) == "b25cffe5d8f5190aa58ab8fad74e8066" or
 	 hash.md5(pe.rich_signature.clear_data) == "7d5f2a8d9c84d114b7886faa24a587e2" or
 	 hash.md5(pe.rich_signature.clear_data) == "6655569d2eaaec3117f6be2d997788b8" or
-	 hash.md5(pe.rich_signature.clear_data) == "73975984302e5a2a9cf0b580d2064fbf")
+	 hash.md5(pe.rich_signature.clear_data) == "73975984302e5a2a9cf0b580d2064fbf" or
+	 hash.md5(pe.rich_signature.clear_data) == "01ac0f0babb057155523bb86fb1ff0a1" or // new since 2020-01-14
+	 hash.md5(pe.rich_signature.clear_data) == "21ba709282442aaf42d874166711d4fc" or
+	 hash.md5(pe.rich_signature.clear_data) == "58981d802dffcfc4dba8bd8577bf4c57" or
+	 hash.md5(pe.rich_signature.clear_data) == "9985b043d95ba30a4fbdb57f54d29acc")
 
 }
 
@@ -80,11 +85,11 @@ rule Sodinokibi_Loader{
         $string34 = "Invoke-MemoryLoadLibrary" nocase
         $string35 = "Invoke-MemoryFreeLibrary" nocase
         $string36 = "$PEBytes32" nocase
-        $string37 = "TVqQAA" nocase
+        $string37 = "TVqQAA"
         $string38 = "FromBase64String" nocase
 
     condition:
-	35 of ($string*)
+	30 of ($string*)
 
 }
 
