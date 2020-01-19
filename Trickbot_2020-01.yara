@@ -1,4 +1,4 @@
-// 19:12 2020-01-15: Trickbot
+// Last updated: 08:23 2020-01-19
 
 import "hash"
 import "pe"
@@ -28,7 +28,15 @@ rule Trickbot_RichHash{
 	 hash.md5(pe.rich_signature.clear_data) == "92b4012d606d52e4b2bf257a9db2c248" or
 	 hash.md5(pe.rich_signature.clear_data) == "0da195fda92b5bca4422dbea71106fe2" or
 	 hash.md5(pe.rich_signature.clear_data) == "a99b0597625329c455c6493222fcbab7" or
-	 hash.md5(pe.rich_signature.clear_data) == "0da195fda92b5bca4422dbea71106fe2")
+	 hash.md5(pe.rich_signature.clear_data) == "0f7eec09f1283805e7c48a0d19c8af03" or
+	 hash.md5(pe.rich_signature.clear_data) == "3a557f4d5e6942f91651fa9f31cd29ba" or
+	 hash.md5(pe.rich_signature.clear_data) == "48e3529d339987138163d9afe8a2a3f9" or
+	 hash.md5(pe.rich_signature.clear_data) == "56db6b4ddec5b2bf9c9ad122012a886c" or
+	 hash.md5(pe.rich_signature.clear_data) == "5abdd9c5dac7402e922d96c8ba2548fd" or
+	 hash.md5(pe.rich_signature.clear_data) == "9152a2d9b11b8d3756b2f7831557ce95" or
+	 hash.md5(pe.rich_signature.clear_data) == "f05a488cd83d3aa2b72c1ddefe58cfce" or
+	 hash.md5(pe.rich_signature.clear_data) == "f2f309848787ec9e0a44202028096519" or
+	 hash.md5(pe.rich_signature.clear_data) == "fb0da75b6bc1dfd87632cd1e8608ca04")
 
 }
 
