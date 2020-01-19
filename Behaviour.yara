@@ -1,6 +1,7 @@
-// Last update: 08:57 2020-01-18
+// Last update: 03:42 2020-01-19
 // Author: "@Pro_Integritate"
 // Should be used to give you a sorta-idea of what a file does.
+
 
 import "hash"
 import "pe"
@@ -15,6 +16,14 @@ rule Windows_Executable{
 rule Linux_Executable{
     condition:
 	uint16(0x00) == 0x457f and uint16(0x02) == 0x464c
+}
+
+rule Windows_Executable_Base64{
+    strings:
+        $string1 = "TVqQ"
+	$string2 = "TVpQ"
+    condition:
+	any of ($string*)
 }
 
 rule INFO_Possible_UPX_Compressed{
@@ -58,7 +67,6 @@ rule Windows_Network_Capability{
 	$net7 = "winhttp.dll" nocase
 	$net8 = "NETAPI32.dll" nocase
 	$net9 = "WINHTTP.dll" nocase
-
     condition:
 	any of ($net*)
 }
@@ -74,8 +82,10 @@ rule Possible_Decoding_Base64_Payload{
     strings:
         $string1 = "Convert" nocase
 	$string2 = "FromBase64String" nocase
+	$string3 = "MSXML2.DOMDocument"
+	$string4 = "B64DECODE"
     condition:
-	$string1 and $string2
+	($string1 and $string2) or ($string3 and $string4)
 }
 
 rule Possible_URL{
@@ -115,7 +125,6 @@ rule Dotnet_FileWrite_Capability{
         $string1 = "WriteAllBytes" nocase
         $string2 = "WriteAllLines" nocase
         $string3 = "WriteAllText" nocase
-
     condition:
 	$function and any of ($string*)
 }
@@ -137,16 +146,17 @@ rule DotNet_Sockets_Capability{
 rule DotNet_File_Decompression_Capability{
     strings:
         $string1 = "System.IO.Compression" nocase
-        $string2 = "Deflate" nocase // "DeflateStream"
+        $string2 = "IO.Compression" nocase 
+        $method1 = "Deflate" nocase
+        $method2 = "Decompress" nocase
     condition:
-	all of ($string*)
+	any of ($string*) and any of ($method*)
 }
 
 rule Possible_Reading_Keyboard_Input{
     strings:
         $string1 = "GetAsyncKeyState" nocase
 	$string2 = "SetWindowsHook" nocase
-
     condition:
 	any of ($string*)
 }
@@ -164,7 +174,6 @@ rule Possible_Firewall_Configuration_Change{
         $string1 = "iptables" nocase
         $string2 = "netsh advfirewall" nocase
         $string3 = "FirewallAPI" nocase
-
     condition:
 	any of ($string*)
 }
@@ -177,7 +186,6 @@ rule Unconventional_Build_Tools{
         $string4 = "vbc.exe" nocase
         $string5 = "ilasm.exe" nocase
         $string6 = "jsc.exe" nocase
-
     condition:
 	any of ($string*)
 }
@@ -194,7 +202,6 @@ rule Registry_Query_Infomation{
         $open = "RegOpenKey" nocase
         $string1 = "RegQueryValue" nocase
         $string2 = "RegEnumKey" nocase
-
     condition:
 	$open and any of ($string*)
 }
@@ -205,7 +212,6 @@ rule Registry_Write_Infomation{
         $string1 = "RegCreateKey" nocase
         $string2 = "RegDeleteKey" nocase
         $string3 = "RegSetValue" nocase
-
     condition:
 	$open and any of ($string*)
 }
@@ -219,20 +225,19 @@ rule Document_RTF_Possible_Obj_Payload{
 }
 
 rule Possible_GZip_Stream{
-
     strings:
-	$stream = {1f 8b 08 08}
+	$stream1 = {1f 8b 08 08}
+	$stream2 = "H4sI" // Base64
     condition:
-	$stream
-
+	any of ($stream*)
 }
 
 rule Possible_Zip_Stream{
     strings:
-	$stream = {50 4b 03 04}
+	$stream1 = {50 4b 03 04}
+	$stream2 = {55 45 73 44} // Base64
     condition:
-	$stream
-
+	any of ($stream*)
 }
 
 rule WARNING_CreateRemoteThread_Found{
@@ -240,7 +245,6 @@ rule WARNING_CreateRemoteThread_Found{
 	$String = "CreateRemoteThread"
     condition:
 	$String
-
 }
 
 rule WARNING_ReadProcessMemory_Found{
@@ -248,7 +252,6 @@ rule WARNING_ReadProcessMemory_Found{
 	$String = "ReadProcessMemory"
     condition:
 	$String
-
 }
 
 rule WARNING_WriteProcessMemory_Found{
@@ -256,7 +259,6 @@ rule WARNING_WriteProcessMemory_Found{
 	$String = "WriteProcessMemory"
     condition:
 	$String
-
 }
 
 rule Possible_SeDebugPrivilege{
@@ -265,5 +267,21 @@ rule Possible_SeDebugPrivilege{
 	$String2 = "SeDebugPrivilege"
     condition:
 	all of ($String*)
-
 }
+
+rule Possible_Powershell_Execution_Bypass{
+    strings:
+	$String1 = "powershell.exe"
+	$String2 = "-Exec Bypass"
+    condition:
+	all of ($String*)
+}
+
+rule Windows_Filesystem_Scripting{
+    strings:
+	$String1 = "Scripting.FileSystemObject"
+	$String2 = "Wscript.Shell"
+    condition:
+	any of ($String*)
+}
+
