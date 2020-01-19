@@ -1,4 +1,4 @@
-// Last updated: 07:31 2020-01-19
+// Last updated: 08:00 2020-01-19
 
 import "hash"
 import "pe"
@@ -11,30 +11,13 @@ rule Sodinokibi_Payload{
         author = "@Pro_Integritate"
         maltype = "Ransomware"
 
-    strings:
-
-	// Compressed variant
-        $string1 = "expand 32-byte"
-        $string2 = "expand 16-byte"
-
-	// Uncompressed variant 1
-	$string3 = "kwvhrdibgmmpkhkidrby4mccwqpds5za6uo2thcw5gz75qncv7rbhyad.onion"
-
-	// Uncompressed variant 2
-	$string4 = {46 00 55 00 4E 00 34 00 30 00 38}
-
-	// Uncompressed variant 3
-	$string5 = "reflective_dll" nocase
-	$string6 = "ENCRYPTED" nocase
-
     condition:
-	(($string1 and $string2) or $string3 or $string4 or ($string5 and $string6)) and	
 	uint16(0x00) == 0x5a4d and
 	(hash.md5(pe.rich_signature.clear_data) == "b25cffe5d8f5190aa58ab8fad74e8066" or
 	 hash.md5(pe.rich_signature.clear_data) == "7d5f2a8d9c84d114b7886faa24a587e2" or
 	 hash.md5(pe.rich_signature.clear_data) == "6655569d2eaaec3117f6be2d997788b8" or
 	 hash.md5(pe.rich_signature.clear_data) == "73975984302e5a2a9cf0b580d2064fbf" or
-	 hash.md5(pe.rich_signature.clear_data) == "01ac0f0babb057155523bb86fb1ff0a1" or // new since 2020-01-14
+	 hash.md5(pe.rich_signature.clear_data) == "01ac0f0babb057155523bb86fb1ff0a1" or
 	 hash.md5(pe.rich_signature.clear_data) == "21ba709282442aaf42d874166711d4fc" or
 	 hash.md5(pe.rich_signature.clear_data) == "58981d802dffcfc4dba8bd8577bf4c57" or
 	 hash.md5(pe.rich_signature.clear_data) == "9985b043d95ba30a4fbdb57f54d29acc")
