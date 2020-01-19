@@ -326,7 +326,7 @@ rule Autoit_Scripting{
 	$String1 = "AutoIt"
 	$String2 = "FSoftware"
     condition:
-	any of ($String*)
+	all of ($String*)
 }
 
 rule External_Scripting{
