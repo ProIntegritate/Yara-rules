@@ -482,7 +482,7 @@ rule Terminate_process_capability{
 rule Reboot_Persistance{
     strings:
 	$String1 = "currentversion" nocase	// Currentversion/Run
-	$String2 = "run" nocase
+	$String2 = "run" nocase			// Note: some FP's with this.
 	$String3 = "noisreVtnerruc" nocase
 	$String4 = "nur" nocase
 	$String5 = "schtasks" nocase		// Schtasks.exe /Create
@@ -495,4 +495,3 @@ rule Reboot_Persistance{
 	($String5 and $String6) or
 	($String7 and $String8)
 }
-
