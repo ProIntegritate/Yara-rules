@@ -1,53 +1,498 @@
-// Last updated: 16:54 2020-01-20
+// Last update: 17:56 2020-01-20
+// Author: "@Pro_Integritate"
+// 
+// Should be used to give you a sorta-idea of what a file does.
+//
+// Disclaimer: This is just a triage script and does not tell
+// you with 100% certainty that something is going on.
+// Everything need to be validated - and that is your job.
 
 import "hash"
 import "pe"
 
-rule Emotet_RichHash{
+rule Windows_Executable{
+    strings:
+        $pe = "PE"
+    condition:
+	uint16(0x00) == 0x5a4d and $pe
+}
 
-    meta:
-        description = "Emotet Richhash signatures"
-        reference = "URLHaus links + Downloads (i.e. AAR)"
-        author = "@Pro_Integritate"
-        maltype = "Bot/Stealer/Trojan"
+rule Linux_Executable{
+    condition:
+	uint16(0x00) == 0x457f and uint16(0x02) == 0x464c
+}
+
+rule Windows_Executable_Base64{
+    strings:
+        $string1 = "TVqQ"
+	$string2 = "TVpQ"
+        $string3 = "QqVT" // Reversed
+	$string4 = "QpVT" // Reversed
+    condition:
+	any of ($string*)
+}
+
+rule INFO_UPX_Compression{
+    strings:
+        $upx = "UPX!"
+    condition:
+	$upx
+}
+
+rule INFO_RichHeader{
+    strings:
+        $RichHeader = "Rich"
+    condition:
+	$RichHeader
+}
+
+rule INFO_PDB_Path{
+    strings:
+        $string1 = ".pdb" nocase
+    condition:
+	any of ($string*)
+}
+
+rule MS_Office_Document_Legacy{
+    condition:
+	uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
+	uint16(0x19) == 0x0320
+}
+
+
+// ---- Capabilities ----
+
+rule Networking_Capability{
+    strings:
+	$net1 = "WSOCK32.dll" nocase
+	$net2 = "WININET.dll" nocase
+	$net3 = "IPHLPAPI.DLL" nocase
+	$net4 = "ws2_32.dll" nocase
+	$net5 = "wsock32.dll" nocase
+	$net6 = "wininet.dll" nocase
+	$net7 = "winhttp.dll" nocase
+	$net8 = "NETAPI32.dll" nocase
+	$net9 = "WINHTTP.dll" nocase
+	$net10 = "mswsock.dll" nocase
+    condition:
+	any of ($net*)
+}
+
+rule Shell_External_Commands{
+    strings:
+	$string1 = "shell32.dll" nocase
+	$string2 = "ShellExecute" nocase
+	$string3 = "ProcessStartInfo" nocase
+	$string4 = "Scripting.FileSystemObject" nocase
+	$string5 = "Shell.Application" nocase
+        $string6 = "Shell" nocase // Very generic, i know... keep for now
 
     condition:
-	uint16(0x00) == 0x5a4d and
-	(hash.md5(pe.rich_signature.clear_data) == "07c4932d1fee8a2d2105a514129a5c9c" or
-	 hash.md5(pe.rich_signature.clear_data) == "029723f6bbf930981b63397071df0217" or
-	 hash.md5(pe.rich_signature.clear_data) == "19790190eacf226586729fe9133f6296" or
-	 hash.md5(pe.rich_signature.clear_data) == "304dc0fecbaa34e3705acade381886dc" or
-	 hash.md5(pe.rich_signature.clear_data) == "44baaea5f978a0d5d20aa43856d2f87f" or
-	 hash.md5(pe.rich_signature.clear_data) == "4cf469ab2227902bbd5942a05876ab91" or
-	 hash.md5(pe.rich_signature.clear_data) == "536133a24ee18066cf53b6c1fa6ffc08" or
-	 hash.md5(pe.rich_signature.clear_data) == "59f6b8b2e0dca75d42c6144c56a29c9d" or
-	 hash.md5(pe.rich_signature.clear_data) == "83b61676889c62f5d5814b1c116653e7" or
-	 hash.md5(pe.rich_signature.clear_data) == "bf4055335a51f3fa635444d3d838b439" or
-	 hash.md5(pe.rich_signature.clear_data) == "cc66fe8671208ee9cb7a62f5524df910" or
-	 hash.md5(pe.rich_signature.clear_data) == "db29f940bfa4b5d0e4e8ed57e158c90c" or
-	 hash.md5(pe.rich_signature.clear_data) == "e509d6c1334839bb4014a4dae788fb89" or
-	 hash.md5(pe.rich_signature.clear_data) == "eb785e618d99684f278df42ffaefab04" or
-	 hash.md5(pe.rich_signature.clear_data) == "f475be015099be2ea9bf3cc159f5dc99" or
-	 hash.md5(pe.rich_signature.clear_data) == "91b4d1d1ffc542b4a8c0e78b3b1798df" or
-	 hash.md5(pe.rich_signature.clear_data) == "04493e34d9ca943a968b8a849953d298" or
-	 hash.md5(pe.rich_signature.clear_data) == "2f59279dc43165b64e02ccc5a80c1594" or
-	 hash.md5(pe.rich_signature.clear_data) == "b2d4ca17618d0a548ead1e7212be9e28" or
-	 hash.md5(pe.rich_signature.clear_data) == "3b563ac2144b030de0c73cce32185744" or
-	 hash.md5(pe.rich_signature.clear_data) == "6e9c07fae9c1c627b0338e35318617d3" or
-	 hash.md5(pe.rich_signature.clear_data) == "df3da9a4af60ea815452a46dc02aca8f" or
-	 hash.md5(pe.rich_signature.clear_data) == "e30041a40082476e29a01a997512abeb" or
-	 hash.md5(pe.rich_signature.clear_data) == "20b86e2e5c27f605c05f1e9e5d5a34b9" or
-	 hash.md5(pe.rich_signature.clear_data) == "279eed9e8ff9d93495b3956cdbcf320f" or
-	 hash.md5(pe.rich_signature.clear_data) == "3e7e9bc419fd963c02767421f7d5605f" or
-	 hash.md5(pe.rich_signature.clear_data) == "9ec047671e6e58feec21aee100ce0960" or
-	 hash.md5(pe.rich_signature.clear_data) == "a03093196d178f13242b74ab12c57b36" or
-	 hash.md5(pe.rich_signature.clear_data) == "13fb66c37cefb03b667fed85ce8053db" or
-	 hash.md5(pe.rich_signature.clear_data) == "3c7b16f90bfa042c8260da0b12b31f73" or
-	 hash.md5(pe.rich_signature.clear_data) == "502cb4f51b5ede001d01ed82374577b2" or
-	 hash.md5(pe.rich_signature.clear_data) == "b7531720c720edcbbc555192e2144662" or
-	 hash.md5(pe.rich_signature.clear_data) == "06847e309eb1aa446b4a3d4f45bda001" or
-	 hash.md5(pe.rich_signature.clear_data) == "43cd1f34e61bc6a8a34468c0550b2866" or
-	 hash.md5(pe.rich_signature.clear_data) == "a04b6ed332ece70eb49e12d3b0e9d90f" or
-	 hash.md5(pe.rich_signature.clear_data) == "dda1c67517404ff2a26719872babe17c")
-
+	any of ($string*)
 }
+
+rule Decoding_Base64_Payload{
+    strings:
+        $string1 = "Convert" nocase
+	$string2 = "FromBase64String" nocase
+	$string3 = "MSXML2.DOMDocument" nocase
+	$string4 = "B64DECODE" nocase
+    condition:
+	($string1 and $string2) or ($string3 and $string4)
+}
+
+rule URL{
+    strings:
+        $string1 = "https:" nocase
+        $string2 = ":sptth" nocase // reversed
+	$string3 = "http:" nocase
+	$string4 = ":ptth" nocase // reversed
+	$string5 = "ftp:" nocase
+	$string6 = ":ptf" nocase // reversed
+    condition:
+	any of ($string*)
+}
+
+rule UserAgent{
+    strings:
+        $string1 = "User-Agent" nocase
+        $string2 = "tnegA-resU" nocase // reversed
+    condition:
+	any of ($string*)
+}
+
+rule Payload_Download{
+    strings:
+        $string1 = "DownloadFile" nocase
+        $string2 = "eliFdaolnwoD" nocase // reversed
+        $string3 = "DownloadString" nocase
+        $string4 = "gnirtSdaolnwoD" nocase // reversed
+        $string5 = "DownloadData" nocase
+        $string6 = "ataDdaolnwoD" nocase // reversed
+    condition:
+	any of ($string*)
+}
+
+rule Legacy_Crypto_Capability{
+    strings:
+        $string1 = "crypt32.dll" nocase
+    condition:
+	$string1
+}
+
+rule Dotnet_FileWrite_Capability{
+    strings:
+	$function1 = "System.IO" nocase // System.IO|0x00|File !
+	$function2 = "OI.metsyS" nocase // reversed
+        $string1 = "WriteAllBytes" nocase
+        $string2 = "setyBllAetirW" nocase // reversed
+        $string3 = "WriteAllLines" nocase
+        $string4 = "seniLllAetirW" nocase // reversed
+        $string5 = "WriteAllText" nocase
+        $string6 = "txeTllAetirW" nocase // reversed
+    condition:
+	any of ($function*) and any of ($string*)
+}
+
+rule Dotnet_FileMove_Capability{
+    strings:
+        $hex = {53 79 73 74 65 6D 2E 49 4F 00 46 69 6C 65 00 4D 6F 76 65} // System.IO|0x00|File|0x00|Move
+	$string1 = "System.IO" nocase // Text for Scripting
+	$string2 = "OI.netsyS" nocase // reversed
+	$string3 = "File" nocase
+	$string4 = "eliF" nocase // reversed
+	$string5 = "Move" nocase 
+	$string6 = "evoM" nocase // reversed
+    condition:
+	$hex or
+	($string1 and $string3 and $string5) or
+	($string2 and $string4 and $string6)
+}
+
+rule DotNet_Crypto_Capability{
+    strings:
+        $string1 = "System.Security.Cryptography" nocase
+    condition:
+	$string1
+}
+
+rule DotNet_Sockets_Capability{
+    strings:
+        $string1 = "System.Net.Sockets" nocase
+        $string2 = "stekcoS.teN.metsyS" nocase // reversed
+    condition:
+	any of ($string*)
+}
+
+rule DotNet_Webclient_Capability{
+    strings:
+        $string1 = "System.Net.WebClient" nocase
+        $string2 = "tneilCbeW.teN.metsyS" nocase // reversed
+    condition:
+	any of ($string*)
+}
+
+rule DotNet_DNS_Capability{
+    strings:
+        $string1 = "System.Net" nocase
+        $string2 = "teN.metsyS" nocase // reversed
+	$string3 = "Dns" nocase
+	$string4 = "snD" nocase // reversed
+    condition:
+	($string1 and $string3) or
+	($string2 and $string4)
+}
+
+rule DotNet_File_Decompression_Capability{
+    strings:
+        $string1 = "IO.Compression" nocase 
+        $string2 = "noisserpmoC.OI" nocase 
+        $method1 = "Deflate" nocase
+        $method2 = "etalfeD" nocase // reversed
+        $method3 = "Decompress" nocase
+        $method4 = "sserpmoceD" nocase // reversed
+    condition:
+	any of ($string*) and any of ($method*)
+}
+
+rule Reading_Keyboard_Input{
+    strings:
+        $string1 = "GetAsyncKeyState" nocase
+	$string2 = "SetWindowsHook" nocase
+    condition:
+	any of ($string*)
+}
+
+rule HTTP_Binary_transfer{
+    strings:
+        $string1 = "application/octet-stream" nocase
+        $string2 = "maerts-tetco/noitacilppa" nocase // reversed
+	$string3 = "application/zip" nocase
+	$string4 = "piz/noitacilppa" nocase // reversed
+    condition:
+	any of ($string*)
+}
+
+rule Firewall_Configuration_Change{
+    strings:
+        $string1 = "iptables" nocase
+        $string2 = "selbatpi" nocase // reversed
+        $string3 = "netsh advfirewall" nocase
+        $string4 = "llawerifvda hsten" nocase // reversed
+        $string5 = "FirewallAPI" nocase
+        $string6 = "IPAllaweriF" nocase // reversed
+    condition:
+	any of ($string*)
+}
+
+rule Unconventional_Build_Tools{
+    strings:
+        $string1 = "installutil.exe" nocase
+        $string2 = "exe.litullatsni" nocase
+        $string3 = "msbuild.exe" nocase
+        $string4 = "exe.dliubsm" nocase
+        $string5 = "csc.exe" nocase
+        $string6 = "exe.csc" nocase
+        $string7 = "vbc.exe" nocase
+        $string8 = "exe.cbv" nocase
+        $string9 = "ilasm.exe" nocase
+        $string10 = "exe.msali" nocase
+        $string11 = "jsc.exe" nocase
+        $string12 = "exe.csj" nocase
+    condition:
+	any of ($string*)
+}
+
+rule Recon_WMIC{
+    strings:
+        $string1 = "wmic.exe" nocase
+        $string2 = "exe.cimw" nocase
+    condition:
+	any of ($string*)
+}
+
+rule Registry_Query_Infomation{
+    strings:
+        $open = "RegOpenKey" nocase
+        $string1 = "RegQueryValue" nocase
+        $string2 = "RegEnumKey" nocase
+    condition:
+	$open and any of ($string*)
+}
+
+rule Registry_Write_Infomation{
+    strings:
+	$open = "RegOpenKey"
+        $string1 = "RegCreateKey" nocase
+        $string2 = "RegDeleteKey" nocase
+        $string3 = "RegSetValue" nocase
+    condition:
+	$open and any of ($string*)
+}
+
+rule Document_RTF_Obj_Payload{
+    strings:
+	$string1 = "rtf" nocase
+	$string2 = "objdata" nocase
+    condition:
+	all of ($string*)
+}
+
+rule GZip_Stream{
+    strings:
+	$stream1 = {1f 8b 08 08}
+	$stream2 = "H4sI" // Base64
+    condition:
+	any of ($stream*)
+}
+
+rule Zip_Stream{
+    strings:
+	$stream1 = {50 4b 03 04}
+	$stream2 = {55 45 73 44} // Base64
+    condition:
+	any of ($stream*)
+}
+
+rule RAR_Stream{
+    strings:
+	$stream1 = {52 61 72 21}
+	$stream2 = {52 45 7E 5E}
+	$stream3 = {55 6d 46 79} // Base64
+	$stream4 = {55 6b 56 2b} // Base64
+    condition:
+	any of ($stream*)
+}
+
+rule Creating_Thread_In_Remote_Process{
+    strings:
+	$String = "CreateRemoteThread" nocase
+    condition:
+	$String
+}
+
+rule Creating_Thread{
+    strings:
+	$String = "CreateThread" nocase
+    condition:
+	$String
+}
+
+rule Reading_Memory_In_Remote_Process{
+    strings:
+	$String = "ReadProcessMemory" nocase
+    condition:
+	$String
+}
+
+rule Writing_Memory_In_Remote_Process{
+    strings:
+	$String = "WriteProcessMemory" nocase
+    condition:
+	$String
+}
+
+rule Calling_Debug_Privileges{
+    strings:
+	$String1 = "AdjustTokenPrivileges" nocase
+	$String2 = "SeDebugPrivilege" nocase
+    condition:
+	all of ($String*)
+}
+
+rule Powershell_Execution_Bypass{
+    strings:
+	$String1 = "powershell.exe" nocase
+	$String2 = "exe.llehsrewop" nocase // reverse
+	$String3 = "-Exec Bypass" nocase
+	$String4 = "ssapyB cexE-" nocase // reverse
+    condition:
+	($String1 and $String3) or
+	($String2 and $String4)
+}
+
+rule Filesystem_Scripting{
+    strings:
+	$String1 = "Scripting.FileSystemObject" nocase
+	$String2 = "tcejbOmetsySeliF.gnitpircS" nocase
+	$String3 = "Wscript.Shell" nocase
+	$String4 = "llehS.tpircsW" nocase
+    condition:
+	($String1 and $String3) or
+	($String2 and $String4)
+}
+
+rule Checks_For_Debugger{
+    strings:
+	$String1 = "IsDebuggerPresent" nocase // Sub process
+	$String2 = "CheckRemoteDebuggerPresent" nocase // Paralell process
+    condition:
+	any of ($String*)
+}
+
+rule Registry_HKEY_Hive_Reference{
+    strings:
+	$String1 = "HKEY_Local_Machine" nocase ascii wide
+	$String2 = "enihcaM_lacoL_YEKH" nocase ascii wide // reverse
+	$String3 = "HKEY_Current_User" nocase ascii wide
+	$String4 = "resU_tnerruC_YEKH" nocase ascii wide // reverse
+	$String5 = "HKEY_Users" nocase ascii wide
+	$String6 = "sresU_YEKH" nocase ascii wide // reverse
+	$String7 = "HKEY_Classes_Root" nocase ascii wide
+	$String8 = "tooR_sessalC_YEKH" nocase ascii wide // reverse
+	$String9 = "HKEY_Current_Config" nocase ascii wide
+	$String10 = "gifnoC_tnerruC_YEKH" nocase ascii wide // reverse
+
+    condition:
+	any of ($String*)
+}
+
+rule Autoit_Scripting{
+    strings:
+	$String1 = "AutoIt"
+	$String2 = "FSoftware"
+    condition:
+	all of ($String*)
+}
+
+rule External_Scripting{
+    strings:
+	$String1 = "psexec.exe" nocase
+	$String2 = "psExec64.exe" nocase
+	$String3 = "cmd.exe" nocase
+	$String4 = "powershell.exe" nocase
+    condition:
+	any of ($String*)
+}
+
+rule System_folder_enumeration{
+    strings:
+	$String1 = "SystemDirectory" nocase
+	$String1 = "yrotceriDmetsyS" nocase // reverse
+	$String2 = "Systemroot" nocase
+	$String2 = "toormetsyS" nocase // reverse
+	$String3 = "Windir" nocase
+	$String3 = "ridniW" nocase // reverse
+    condition:
+	any of ($String*)
+}
+
+rule Enumerate_Antivirus_Product{
+    strings:
+	$String1 = "antivirusproduct" nocase
+	$String2 = "tcudorPsurivitna" nocase
+    condition:
+	any of ($String*)
+}
+
+rule String_obfuscation{
+    strings:
+	$String1 = "StrReverse" nocase
+	$string2 = {22 20 26 20 22} 	// " & "
+	$string3 = {22 26 22}  	 	//  "&"
+	$string4 = {22 20 2B 20 22} 	// " + "
+	$string5 = {22 2B 22}  	 	//  "+"
+    condition:
+	any of ($String*)
+}
+
+rule Reboot_Persistance{
+    strings:
+	$String1 = "currentversion" nocase	// Currentversion/Run
+	$String2 = "run" nocase
+	$String3 = "noisreVtnerruc" nocase
+	$String4 = "nur" nocase
+	$String5 = "schtasks" nocase		// Schtasks.exe /Create
+	$String6 = "create" nocase
+	$String7 = "sksathcs" nocase
+	$String8 = "etaerc" nocase
+    condition:
+	($String1 and $String2) or
+	($String3 and $String4) or
+	($String5 and $String6) or
+	($String7 and $String8)
+}
+
+rule Registry_Commandline{
+    strings:
+        $string1 = "Reg.exe" nocase
+        $string2 = "exe.geR" nocase // reverse
+    condition:
+	any of ($string*)
+}
+
+rule Accessing_Or_Creating_Services{
+    strings:
+        $string1 = "OpenService" nocase
+        $string2 = "CreateService" nocase
+    condition:
+	any of ($string*)
+}
+
+rule Terminate_process_capability{
+    strings:
+        $string1 = "TerminateProcess" nocase
+    condition:
+	$string1
+}
+
