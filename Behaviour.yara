@@ -1,4 +1,4 @@
-// Last update: 05:41 2020-01-19
+// Last update: 07:25 2020-01-20
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of what a file does.
@@ -26,6 +26,8 @@ rule Windows_Executable_Base64{
     strings:
         $string1 = "TVqQ"
 	$string2 = "TVpQ"
+        $string3 = "QqVT" // Reversed
+	$string4 = "QpVT" // Reversed
     condition:
 	any of ($string*)
 }
@@ -47,8 +49,9 @@ rule INFO_RichHeader{
 rule INFO_PDB_Path{
     strings:
         $string1 = ".pdb" nocase
+        $string2 = "bdp." nocase
     condition:
-	$string1
+	any of ($string*)
 }
 
 rule MS_Office_Document_Legacy{
@@ -78,8 +81,11 @@ rule Networking_Capability{
 
 rule Shell_External_Commands{
     strings:
-        $string1 = "Shell" nocase // Very generic, i know... keep for now
-	$string2 = "shell32.dll" nocase
+	$string1 = "shell32.dll" nocase
+	$string2 = "ShellExecute" nocase
+	$string3 = "ProcessStartInfo" nocase
+        $string4 = "Shell" nocase // Very generic, i know... keep for now
+
     condition:
 	any of ($string*)
 }
@@ -97,23 +103,31 @@ rule Decoding_Base64_Payload{
 rule URL{
     strings:
         $string1 = "https:" nocase
-	$string2 = "http:" nocase
+        $string2 = ":sptth" nocase // reversed
+	$string3 = "http:" nocase
+	$string4 = ":ptth" nocase // reversed
+	$string5 = "ftp:" nocase
+	$string6 = ":ptf" nocase // reversed
     condition:
-	$string1 and $string2
+	any of ($string*)
 }
 
 rule UserAgent{
     strings:
         $string1 = "User-Agent" nocase
+        $string2 = "tnegA-resU" nocase // reversed
     condition:
-	$string1
+	any of ($string*)
 }
 
 rule Payload_Download{
     strings:
         $string1 = "DownloadFile" nocase
-        $string2 = "DownloadString" nocase
-        $string3 = "DownloadData" nocase
+        $string2 = "eliFdaolnwoD" nocase // reversed
+        $string3 = "DownloadString" nocase
+        $string4 = "gnirtSdaolnwoD" nocase // reversed
+        $string5 = "DownloadData" nocase
+        $string6 = "ataDdaolnwoD" nocase // reversed
     condition:
 	any of ($string*)
 }
@@ -127,22 +141,31 @@ rule Legacy_Crypto_Capability{
 
 rule Dotnet_FileWrite_Capability{
     strings:
-	$function = "System.IO" nocase // System.IO|0x00|File !
+	$function1 = "System.IO" nocase // System.IO|0x00|File !
+	$function2 = "OI.metsyS" nocase // reversed
         $string1 = "WriteAllBytes" nocase
-        $string2 = "WriteAllLines" nocase
-        $string3 = "WriteAllText" nocase
+        $string2 = "setyBllAetirW" nocase // reversed
+        $string3 = "WriteAllLines" nocase
+        $string4 = "seniLllAetirW" nocase // reversed
+        $string5 = "WriteAllText" nocase
+        $string6 = "txeTllAetirW" nocase // reversed
     condition:
-	$function and any of ($string*)
+	any of ($function*) and any of ($string*)
 }
 
 rule Dotnet_FileMove_Capability{
     strings:
         $hex = {53 79 73 74 65 6D 2E 49 4F 00 46 69 6C 65 00 4D 6F 76 65} // System.IO|0x00|File|0x00|Move
 	$string1 = "System.IO" nocase // Text for Scripting
-	$string2 = "File" nocase
-	$string3 = "Move" nocase 
+	$string2 = "OI.netsyS" nocase // reversed
+	$string3 = "File" nocase
+	$string4 = "eliF" nocase // reversed
+	$string5 = "Move" nocase 
+	$string6 = "evoM" nocase // reversed
     condition:
-	$hex or all of ($string*)
+	$hex or
+	($string1 and $string3 and $string5) or
+	($string2 and $string4 and $string6)
 }
 
 rule DotNet_Crypto_Capability{
@@ -155,16 +178,21 @@ rule DotNet_Crypto_Capability{
 rule DotNet_Sockets_Capability{
     strings:
         $string1 = "System.Net.Sockets" nocase
+        $string2 = "stekcoS.teN.metsyS" nocase // reversed
+        $string3 = "System.Net.WebClient" nocase
+        $string4 = "tneilCbeW.teN.metsyS" nocase // reversed
     condition:
-	$string1
+	any of ($string*)
 }
 
 rule DotNet_File_Decompression_Capability{
     strings:
-        $string1 = "System.IO.Compression" nocase
-        $string2 = "IO.Compression" nocase 
+        $string1 = "IO.Compression" nocase 
+        $string2 = "noisserpmoC.OI" nocase 
         $method1 = "Deflate" nocase
-        $method2 = "Decompress" nocase
+        $method2 = "etalfeD" nocase // reversed
+        $method3 = "Decompress" nocase
+        $method4 = "sserpmoceD" nocase // reversed
     condition:
 	any of ($string*) and any of ($method*)
 }
@@ -180,7 +208,9 @@ rule Reading_Keyboard_Input{
 rule HTTP_Binary_transfer{
     strings:
         $string1 = "application/octet-stream" nocase
-	$string2 = "application/zip" nocase
+        $string2 = "maerts-tetco/noitacilppa" nocase // reversed
+	$string3 = "application/zip" nocase
+	$string4 = "piz/noitacilppa" nocase // reversed
     condition:
 	any of ($string*)
 }
@@ -188,13 +218,16 @@ rule HTTP_Binary_transfer{
 rule Firewall_Configuration_Change{
     strings:
         $string1 = "iptables" nocase
-        $string2 = "netsh advfirewall" nocase
-        $string3 = "FirewallAPI" nocase
+        $string2 = "selbatpi" nocase // reversed
+        $string3 = "netsh advfirewall" nocase
+        $string4 = "llawerifvda hsten" nocase // reversed
+        $string5 = "FirewallAPI" nocase
+        $string6 = "IPAllaweriF" nocase // reversed
     condition:
 	any of ($string*)
 }
 
-rule Unconventional_Build_Tools{
+rule Unconventional_Build_Tools{ // TODO: Rev
     strings:
         $string1 = "installutil.exe" nocase
         $string2 = "msbuild.exe" nocase
@@ -206,7 +239,7 @@ rule Unconventional_Build_Tools{
 	any of ($string*)
 }
 
-rule Recon_WMIC{
+rule Recon_WMIC{ // TODO: Rev
     strings:
         $string1 = "wmic.exe" nocase
     condition:
@@ -263,6 +296,13 @@ rule Creating_Thread_In_Remote_Process{
 	$String
 }
 
+rule Creating_Thread{
+    strings:
+	$String = "CreateThread" nocase
+    condition:
+	$String
+}
+
 rule Reading_Memory_In_Remote_Process{
     strings:
 	$String = "ReadProcessMemory" nocase
@@ -277,7 +317,7 @@ rule Writing_Memory_In_Remote_Process{
 	$String
 }
 
-rule Calling_Debugging_Privileges{
+rule Calling_Debug_Privileges{
     strings:
 	$String1 = "AdjustTokenPrivileges" nocase
 	$String2 = "SeDebugPrivilege" nocase
@@ -285,7 +325,7 @@ rule Calling_Debugging_Privileges{
 	all of ($String*)
 }
 
-rule Powershell_Execution_Bypass{
+rule Powershell_Execution_Bypass{ // TODO: Rev
     strings:
 	$String1 = "powershell.exe" nocase
 	$String2 = "-Exec Bypass" nocase
@@ -293,7 +333,7 @@ rule Powershell_Execution_Bypass{
 	all of ($String*)
 }
 
-rule Filesystem_Scripting{
+rule Filesystem_Scripting{ // TODO: Rev
     strings:
 	$String1 = "Scripting.FileSystemObject" nocase
 	$String2 = "Wscript.Shell" nocase
@@ -309,7 +349,7 @@ rule Checks_For_Debugger{
 	any of ($String*)
 }
 
-rule Registry_HKEY_Hive_Reference{
+rule Registry_HKEY_Hive_Reference{ // TODO: Rev
     strings:
 	$String1 = "HKEY_Local_Machine" nocase ascii wide
 	$String2 = "HKEY_Current_User" nocase ascii wide
@@ -329,14 +369,63 @@ rule Autoit_Scripting{
 	all of ($String*)
 }
 
-rule External_Scripting{
+rule External_Scripting{ // TODO: Rev
     strings:
 	$String1 = "psexec.exe" nocase
-	$String2 = "PsExec64.exe" nocase
+	$String2 = "psExec64.exe" nocase
 	$String3 = "cmd.exe" nocase
 	$String4 = "powershell.exe" nocase
     condition:
 	any of ($String*)
+}
 
+rule System_folder_enumeration{ // TODO: Rev
+    strings:
+	$String1 = "SystemDirectory" nocase
+	$String2 = "Systemroot" nocase
+	$String3 = "Windir" nocase
+    condition:
+	any of ($String*)
+}
+
+rule Enumerate_Antivirus_Product{
+    strings:
+	$String1 = "antivirusproduct" nocase
+	$String2 = "tcudorPsurivitna" nocase
+    condition:
+	any of ($String*)
+}
+
+rule String_obfuscation{
+    strings:
+	$String1 = "StrReverse" nocase
+	$String2 = " + " nocase
+	$String3 = " & " nocase
+    condition:
+	any of ($String*)
+}
+
+rule Reboot_Persistance{
+    strings:
+	$String1 = "currentversion" nocase	// Currentversion/Run
+	$String2 = "run" nocase
+	$String3 = "noisreVtnerruc" nocase
+	$String4 = "nur" nocase
+	$String5 = "schtasks" nocase		// Schtasks.exe /Create
+	$String6 = "create" nocase
+	$String7 = "sksathcs" nocase
+	$String8 = "etaerc" nocase
+    condition:
+	($String1 and $String2) or
+	($String3 and $String4) or
+	($String5 and $String6) or
+	($String7 and $String8)
+}
+
+rule Registry_Commandline{ // TODO: Rev
+    strings:
+        $string1 = "Reg.exe" nocase
+    condition:
+	$string1
 }
 
