@@ -1,11 +1,11 @@
-// Last update: 07:25 2020-01-20
+// Last update: 18:34 2020-01-20
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of what a file does.
 //
-// 2020-01-19: Removed the classified "Possible_" since this is stringmatching...
-// Everything is "possible" until validated. That is your job.
-
+// Disclaimer: This is just a triage script and does not tell
+// you with 100% certainty that something is going on.
+// Everything need to be validated - and that is your job.
 
 import "hash"
 import "pe"
@@ -49,7 +49,6 @@ rule INFO_RichHeader{
 rule INFO_PDB_Path{
     strings:
         $string1 = ".pdb" nocase
-        $string2 = "bdp." nocase
     condition:
 	any of ($string*)
 }
@@ -61,7 +60,7 @@ rule MS_Office_Document_Legacy{
 }
 
 
-// Capabilities
+// ---- Capabilities ----
 
 rule Networking_Capability{
     strings:
@@ -84,7 +83,9 @@ rule Shell_External_Commands{
 	$string1 = "shell32.dll" nocase
 	$string2 = "ShellExecute" nocase
 	$string3 = "ProcessStartInfo" nocase
-        $string4 = "Shell" nocase // Very generic, i know... keep for now
+	$string4 = "Scripting.FileSystemObject" nocase
+	$string5 = "Shell.Application" nocase
+        $string6 = "Shell" nocase // Very generic, i know... keep for now
 
     condition:
 	any of ($string*)
@@ -179,10 +180,27 @@ rule DotNet_Sockets_Capability{
     strings:
         $string1 = "System.Net.Sockets" nocase
         $string2 = "stekcoS.teN.metsyS" nocase // reversed
-        $string3 = "System.Net.WebClient" nocase
-        $string4 = "tneilCbeW.teN.metsyS" nocase // reversed
     condition:
 	any of ($string*)
+}
+
+rule DotNet_Webclient_Capability{
+    strings:
+        $string1 = "System.Net.WebClient" nocase
+        $string2 = "tneilCbeW.teN.metsyS" nocase // reversed
+    condition:
+	any of ($string*)
+}
+
+rule DotNet_DNS_Capability{
+    strings:
+        $string1 = "System.Net" nocase
+        $string2 = "teN.metsyS" nocase // reversed
+	$string3 = "Dns" nocase
+	$string4 = "snD" nocase // reversed
+    condition:
+	($string1 and $string3) or
+	($string2 and $string4)
 }
 
 rule DotNet_File_Decompression_Capability{
@@ -227,23 +245,30 @@ rule Firewall_Configuration_Change{
 	any of ($string*)
 }
 
-rule Unconventional_Build_Tools{ // TODO: Rev
+rule Unconventional_Build_Tools{
     strings:
         $string1 = "installutil.exe" nocase
-        $string2 = "msbuild.exe" nocase
-        $string3 = "csc.exe" nocase
-        $string4 = "vbc.exe" nocase
-        $string5 = "ilasm.exe" nocase
-        $string6 = "jsc.exe" nocase
+        $string2 = "exe.litullatsni" nocase
+        $string3 = "msbuild.exe" nocase
+        $string4 = "exe.dliubsm" nocase
+        $string5 = "csc.exe" nocase
+        $string6 = "exe.csc" nocase
+        $string7 = "vbc.exe" nocase
+        $string8 = "exe.cbv" nocase
+        $string9 = "ilasm.exe" nocase
+        $string10 = "exe.msali" nocase
+        $string11 = "jsc.exe" nocase
+        $string12 = "exe.csj" nocase
     condition:
 	any of ($string*)
 }
 
-rule Recon_WMIC{ // TODO: Rev
+rule Recon_WMIC{
     strings:
         $string1 = "wmic.exe" nocase
+        $string2 = "exe.cimw" nocase
     condition:
-	$string1
+	any of ($string*)
 }
 
 rule Registry_Query_Infomation{
@@ -289,6 +314,16 @@ rule Zip_Stream{
 	any of ($stream*)
 }
 
+rule RAR_Stream{
+    strings:
+	$stream1 = {52 61 72 21}
+	$stream2 = {52 45 7E 5E}
+	$stream3 = {55 6d 46 79} // Base64
+	$stream4 = {55 6b 56 2b} // Base64
+    condition:
+	any of ($stream*)
+}
+
 rule Creating_Thread_In_Remote_Process{
     strings:
 	$String = "CreateRemoteThread" nocase
@@ -325,20 +360,26 @@ rule Calling_Debug_Privileges{
 	all of ($String*)
 }
 
-rule Powershell_Execution_Bypass{ // TODO: Rev
+rule Powershell_Execution_Bypass{
     strings:
 	$String1 = "powershell.exe" nocase
-	$String2 = "-Exec Bypass" nocase
+	$String2 = "exe.llehsrewop" nocase // reverse
+	$String3 = "-Exec Bypass" nocase
+	$String4 = "ssapyB cexE-" nocase // reverse
     condition:
-	all of ($String*)
+	($String1 and $String3) or
+	($String2 and $String4)
 }
 
-rule Filesystem_Scripting{ // TODO: Rev
+rule Filesystem_Scripting{
     strings:
 	$String1 = "Scripting.FileSystemObject" nocase
-	$String2 = "Wscript.Shell" nocase
+	$String2 = "tcejbOmetsySeliF.gnitpircS" nocase
+	$String3 = "Wscript.Shell" nocase
+	$String4 = "llehS.tpircsW" nocase
     condition:
-	any of ($String*)
+	($String1 and $String3) or
+	($String2 and $String4)
 }
 
 rule Checks_For_Debugger{
@@ -349,13 +390,18 @@ rule Checks_For_Debugger{
 	any of ($String*)
 }
 
-rule Registry_HKEY_Hive_Reference{ // TODO: Rev
+rule Registry_HKEY_Hive_Reference{
     strings:
 	$String1 = "HKEY_Local_Machine" nocase ascii wide
-	$String2 = "HKEY_Current_User" nocase ascii wide
-	$String3 = "HKEY_Users" nocase ascii wide
-	$String4 = "HKEY_Classes_Root" nocase ascii wide
-	$String5 = "HKEY_Current_Config" nocase ascii wide
+	$String2 = "enihcaM_lacoL_YEKH" nocase ascii wide // reverse
+	$String3 = "HKEY_Current_User" nocase ascii wide
+	$String4 = "resU_tnerruC_YEKH" nocase ascii wide // reverse
+	$String5 = "HKEY_Users" nocase ascii wide
+	$String6 = "sresU_YEKH" nocase ascii wide // reverse
+	$String7 = "HKEY_Classes_Root" nocase ascii wide
+	$String8 = "tooR_sessalC_YEKH" nocase ascii wide // reverse
+	$String9 = "HKEY_Current_Config" nocase ascii wide
+	$String10 = "gifnoC_tnerruC_YEKH" nocase ascii wide // reverse
 
     condition:
 	any of ($String*)
@@ -369,7 +415,7 @@ rule Autoit_Scripting{
 	all of ($String*)
 }
 
-rule External_Scripting{ // TODO: Rev
+rule External_Scripting{
     strings:
 	$String1 = "psexec.exe" nocase
 	$String2 = "psExec64.exe" nocase
@@ -379,11 +425,14 @@ rule External_Scripting{ // TODO: Rev
 	any of ($String*)
 }
 
-rule System_folder_enumeration{ // TODO: Rev
+rule System_folder_enumeration{
     strings:
 	$String1 = "SystemDirectory" nocase
-	$String2 = "Systemroot" nocase
-	$String3 = "Windir" nocase
+	$String2 = "yrotceriDmetsyS" nocase // reverse
+	$String3 = "Systemroot" nocase
+	$String4 = "toormetsyS" nocase // reverse
+	$String5 = "Windir" nocase
+	$String6 = "ridniW" nocase // reverse
     condition:
 	any of ($String*)
 }
@@ -398,11 +447,36 @@ rule Enumerate_Antivirus_Product{
 
 rule String_obfuscation{
     strings:
-	$String1 = "StrReverse" nocase
-	$String2 = " + " nocase
-	$String3 = " & " nocase
+	$string1 = "StrReverse" nocase
+	$string2 = {22 20 26 20 22} 	// " & "
+	$string3 = {22 26 22}  	 	//  "&"
+	$string4 = {22 20 2B 20 22} 	// " + "
+	$string5 = {22 2B 22}  	 	//  "+"
     condition:
-	any of ($String*)
+	any of ($string*)
+}
+
+rule Registry_Commandline{
+    strings:
+        $string1 = "Reg.exe" nocase
+        $string2 = "exe.geR" nocase // reverse
+    condition:
+	any of ($string*)
+}
+
+rule Accessing_Or_Creating_Services{
+    strings:
+        $string1 = "OpenService" nocase
+        $string2 = "CreateService" nocase
+    condition:
+	any of ($string*)
+}
+
+rule Terminate_process_capability{
+    strings:
+        $string1 = "TerminateProcess" nocase
+    condition:
+	$string1
 }
 
 rule Reboot_Persistance{
@@ -420,12 +494,5 @@ rule Reboot_Persistance{
 	($String3 and $String4) or
 	($String5 and $String6) or
 	($String7 and $String8)
-}
-
-rule Registry_Commandline{ // TODO: Rev
-    strings:
-        $string1 = "Reg.exe" nocase
-    condition:
-	$string1
 }
 
