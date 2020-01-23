@@ -1,4 +1,4 @@
-// Last updated: 08:40 2020-01-23
+// Last updated: 15:59 2020-01-23
 
 import "hash"
 import "pe"
@@ -58,5 +58,6 @@ rule Emotet_RichHash{
 	 hash.md5(pe.rich_signature.clear_data) == "5d2986ac26e330150523f660b6003664" or
 	 hash.md5(pe.rich_signature.clear_data) == "b0c405fcb5f9399c7ce7cd488503b81a" or
 	 hash.md5(pe.rich_signature.clear_data) == "790d2f7d44f0d4db26b6d1436df5753e" or
-	 hash.md5(pe.rich_signature.clear_data) == "b77be9e153e00337d06c106f9925804c")
+	 hash.md5(pe.rich_signature.clear_data) == "b77be9e153e00337d06c106f9925804c" or
+	 hash.md5(pe.rich_signature.clear_data) == "4203f9c5b249b4cb83acee35697ab64d")
 }
