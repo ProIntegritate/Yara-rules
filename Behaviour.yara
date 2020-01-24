@@ -1,4 +1,4 @@
-// Last update: 18:34 2020-01-20
+// Last update: 12:59 2020-01-24
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of what a file does.
@@ -171,23 +171,23 @@ rule Dotnet_FileMove_Capability{
 
 rule DotNet_Crypto_Capability{
     strings:
-        $string1 = "System.Security.Cryptography" nocase
+        $string1 = "Security.Cryptography" nocase // -"System."
     condition:
 	$string1
 }
 
 rule DotNet_Sockets_Capability{
     strings:
-        $string1 = "System.Net.Sockets" nocase
-        $string2 = "stekcoS.teN.metsyS" nocase // reversed
+        $string1 = "Net.Sockets" nocase // -"System."
+        $string2 = "stekcoS.teN" nocase // reversed // -"System."
     condition:
 	any of ($string*)
 }
 
 rule DotNet_Webclient_Capability{
     strings:
-        $string1 = "System.Net.WebClient" nocase
-        $string2 = "tneilCbeW.teN.metsyS" nocase // reversed
+        $string1 = "Net.WebClient" nocase // -"System."
+        $string2 = "tneilCbeW.teN" nocase // reversed // -"System."
     condition:
 	any of ($string*)
 }
@@ -198,9 +198,11 @@ rule DotNet_DNS_Capability{
         $string2 = "teN.metsyS" nocase // reversed
 	$string3 = "Dns" nocase
 	$string4 = "snD" nocase // reversed
+	$string5 = "Net.Dns" // Scripts
     condition:
 	($string1 and $string3) or
-	($string2 and $string4)
+	($string2 and $string4) or
+	$string5
 }
 
 rule DotNet_File_Decompression_Capability{
@@ -276,8 +278,10 @@ rule Registry_Query_Infomation{
         $open = "RegOpenKey" nocase
         $string1 = "RegQueryValue" nocase
         $string2 = "RegEnumKey" nocase
+	$dotnetstring1 = "Win32.Registry" nocase
+	$dotnetstring2 = "GetValue" nocase
     condition:
-	$open and any of ($string*)
+	$open and any of ($string*) or all of ($dotnetstring*)
 }
 
 rule Registry_Write_Infomation{
@@ -286,8 +290,10 @@ rule Registry_Write_Infomation{
         $string1 = "RegCreateKey" nocase
         $string2 = "RegDeleteKey" nocase
         $string3 = "RegSetValue" nocase
+	$dotnetstring1 = "Win32.Registry" nocase
+	$dotnetstring2 = "SetValue" nocase
     condition:
-	$open and any of ($string*)
+	$open and any of ($string*) or all of ($dotnetstring*)
 }
 
 rule Document_RTF_Obj_Payload{
@@ -298,7 +304,7 @@ rule Document_RTF_Obj_Payload{
 	all of ($string*)
 }
 
-rule GZip_Stream{
+rule GZip_Stream{ // Position independend, not Magic bytes specifically
     strings:
 	$stream1 = {1f 8b 08 08}
 	$stream2 = "H4sI" // Base64
@@ -306,7 +312,7 @@ rule GZip_Stream{
 	any of ($stream*)
 }
 
-rule Zip_Stream{
+rule Zip_Stream{ // Position independend, not Magic bytes specifically
     strings:
 	$stream1 = {50 4b 03 04}
 	$stream2 = {55 45 73 44} // Base64
@@ -314,7 +320,7 @@ rule Zip_Stream{
 	any of ($stream*)
 }
 
-rule RAR_Stream{
+rule RAR_Stream{ // Position independend, not Magic bytes specifically
     strings:
 	$stream1 = {52 61 72 21}
 	$stream2 = {52 45 7E 5E}
@@ -386,6 +392,7 @@ rule Checks_For_Debugger{
     strings:
 	$String1 = "IsDebuggerPresent" nocase // Sub process
 	$String2 = "CheckRemoteDebuggerPresent" nocase // Paralell process
+	$String3 = "KdDebuggerEnabled" nocase // Kernel call
     condition:
 	any of ($String*)
 }
@@ -402,7 +409,7 @@ rule Registry_HKEY_Hive_Reference{
 	$String8 = "tooR_sessalC_YEKH" nocase ascii wide // reverse
 	$String9 = "HKEY_Current_Config" nocase ascii wide
 	$String10 = "gifnoC_tnerruC_YEKH" nocase ascii wide // reverse
-
+	// + HKLM, HKCU, HKCR, HKCC
     condition:
 	any of ($String*)
 }
@@ -433,6 +440,7 @@ rule System_folder_enumeration{
 	$String4 = "toormetsyS" nocase // reverse
 	$String5 = "Windir" nocase
 	$String6 = "ridniW" nocase // reverse
+	$String7 = "GetSystemWindowsDirectory" nocase
     condition:
 	any of ($String*)
 }
@@ -452,6 +460,7 @@ rule String_obfuscation{
 	$string3 = {22 26 22}  	 	//  "&"
 	$string4 = {22 20 2B 20 22} 	// " + "
 	$string5 = {22 2B 22}  	 	//  "+"
+	$string6 = "decode"
     condition:
 	any of ($string*)
 }
@@ -494,4 +503,25 @@ rule Reboot_Persistance{
 	($String3 and $String4) or
 	($String5 and $String6) or
 	($String7 and $String8)
+}
+
+rule LOLBins{
+    strings:
+	$string1 = "wscript.exe" nocase
+	$string2 = "exe.tpircsw" nocase
+	$string3 = "cscript.exe" nocase
+	$string4 = "exe.tpircsc" nocase
+	$string5 = "bitsadmin.exe" nocase
+	$string6 = "exe.nimdastib" nocase
+
+	// Already here:
+	// "installutil.exe" nocase
+	// "msbuild.exe" nocase
+	// "csc.exe" nocase
+	// "vbc.exe" nocase
+	// "ilasm.exe" nocase
+	// "jsc.exe" nocase
+	// "certutil.exe" nocase
+    condition:
+	any of ($string*)
 }
