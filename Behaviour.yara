@@ -1,4 +1,4 @@
-// Last update: 12:59 2020-01-24
+// Last update: 22:16 2020-02-01
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of what a file does.
@@ -121,6 +121,15 @@ rule UserAgent{
 	any of ($string*)
 }
 
+rule Sets_specific_HTTP_Useragent{
+    strings:
+	$string1 = "SetRequestHeader" nocase
+	$string2 = "User-Agent:" nocase
+    condition:
+	all of ($string*)
+}
+
+
 rule Payload_Download{
     strings:
         $string1 = "DownloadFile" nocase
@@ -133,11 +142,14 @@ rule Payload_Download{
 	any of ($string*)
 }
 
-rule Legacy_Crypto_Capability{
+rule Crypto_Capability{
     strings:
         $string1 = "crypt32.dll" nocase
+        $string2 = "Security.Cryptography" nocase // -"System."
+	$string3 = "yhpargotpyrC.ytiruceS" nocase
+        $string4 = "bcrypt.dll" nocase
     condition:
-	$string1
+	any of ($string*)
 }
 
 rule Dotnet_FileWrite_Capability{
@@ -167,13 +179,6 @@ rule Dotnet_FileMove_Capability{
 	$hex or
 	($string1 and $string3 and $string5) or
 	($string2 and $string4 and $string6)
-}
-
-rule DotNet_Crypto_Capability{
-    strings:
-        $string1 = "Security.Cryptography" nocase // -"System."
-    condition:
-	$string1
 }
 
 rule DotNet_Sockets_Capability{
@@ -441,14 +446,7 @@ rule System_folder_enumeration{
 	$String5 = "Windir" nocase
 	$String6 = "ridniW" nocase // reverse
 	$String7 = "GetSystemWindowsDirectory" nocase
-    condition:
-	any of ($String*)
-}
-
-rule Enumerate_Antivirus_Product{
-    strings:
-	$String1 = "antivirusproduct" nocase
-	$String2 = "tcudorPsurivitna" nocase
+	$String8 = "GetWindowsDirectory" nocase
     condition:
 	any of ($String*)
 }
@@ -460,7 +458,8 @@ rule String_obfuscation{
 	$string3 = {22 26 22}  	 	//  "&"
 	$string4 = {22 20 2B 20 22} 	// " + "
 	$string5 = {22 2B 22}  	 	//  "+"
-	$string6 = "decode"
+	$string6 = "decode" nocase
+	$string7 = "replace" nocase
     condition:
 	any of ($string*)
 }
@@ -481,6 +480,14 @@ rule Accessing_Or_Creating_Services{
 	any of ($string*)
 }
 
+rule Deletes_Services{
+    strings:
+	$string1 = "DeleteService" nocase
+	$string2 = "ecivreSeteleD" nocase
+    condition:
+	any of ($string*)
+}
+
 rule Terminate_process_capability{
     strings:
         $string1 = "TerminateProcess" nocase
@@ -492,11 +499,11 @@ rule Reboot_Persistance{
     strings:
 	$String1 = "currentversion" nocase	// Currentversion/Run
 	$String2 = "run" nocase			// Note: some FP's with this.
-	$String3 = "noisreVtnerruc" nocase
+	$String3 = "noisreVtnerruc" nocase	// Reversed
 	$String4 = "nur" nocase
 	$String5 = "schtasks" nocase		// Schtasks.exe /Create
 	$String6 = "create" nocase
-	$String7 = "sksathcs" nocase
+	$String7 = "sksathcs" nocase		// Reversed
 	$String8 = "etaerc" nocase
     condition:
 	($String1 and $String2) or
@@ -508,11 +515,11 @@ rule Reboot_Persistance{
 rule LOLBins{
     strings:
 	$string1 = "wscript.exe" nocase
-	$string2 = "exe.tpircsw" nocase
+	$string2 = "exe.tpircsw" nocase		// Reversed
 	$string3 = "cscript.exe" nocase
-	$string4 = "exe.tpircsc" nocase
+	$string4 = "exe.tpircsc" nocase		// Reversed
 	$string5 = "bitsadmin.exe" nocase
-	$string6 = "exe.nimdastib" nocase
+	$string6 = "exe.nimdastib" nocase	// Reversed
 
 	// Already here:
 	// "installutil.exe" nocase
@@ -522,6 +529,115 @@ rule LOLBins{
 	// "ilasm.exe" nocase
 	// "jsc.exe" nocase
 	// "certutil.exe" nocase
+    condition:
+	any of ($string*)
+}
+
+rule WMI_Query_Moniker_LDAP{
+    strings:
+	$string1 = "winmgmts:" nocase
+	$string2 = ":stmgmniw" nocase
+	$string3 = "LDAP" nocase
+	$string4 = "PADL" nocase
+    condition:
+	($string1 or $string2) and ($string3 or $string4)
+}
+
+rule Reflective_loader{
+    strings:
+	$string1 = "EntryPoint.Invoke" nocase
+	$string2 = "System.Reflection" nocase
+	$string3 = "Reflection.Assembly" nocase
+    condition:
+	$string1 and ($string2 or $string3)
+}
+
+rule Requires_Admin_Privileges{
+    strings:
+	$string1 = "<?xml" nocase
+	$string2 = "requestedPrivileges" nocase
+	$string3 = "requireAdministrator" nocase
+    condition:
+	all of ($string*)
+}
+
+rule Access_Service_Control_Manager{
+    strings:
+	$string1 = "OpenSCManagerA" nocase
+    condition:
+	$string1
+}
+
+rule WMI_Enumerates_Antivirus{
+    strings:
+	$string1 = "winmgmts:" nocase
+	$string2 = ":stmgmniw" nocase
+	$string3 = "securitycenter" nocase
+	$string4 = "retnecytiruces" nocase
+	$string5 = "AntiVirusProduct" nocase
+	$string6 = "tcudorPsuriVitnA" nocase
+    condition:
+	($string1 or $string2) and ($string3 or $string4) and ($string5 or $string6)
+}
+
+rule WMI_Enumerates_Disk_properties{
+    strings:
+	$string1 = "winmgmts:" nocase
+	$string2 = ":stmgmniw" nocase
+	$string3 = "win32_logicaldisk" nocase
+	$string4 = "ksidlacigol_23niw" nocase
+    condition:
+	($string1 or $string2) and ($string3 or $string4)
+}
+
+rule WMI_Enumerates_OperatingSystem{
+    strings:
+	$string1 = "winmgmts:" nocase
+	$string2 = ":stmgmniw" nocase
+	$string3 = "Win32_OperatingSystem" nocase
+	$string4 = "metsySgnitarepO_23niW" nocase
+    condition:
+	($string1 or $string2) and ($string3 or $string4)
+}
+
+rule Enumerate_Processes{
+    strings:
+	$string1 = "OpenProcess" nocase
+	$string2 = "CreateToolhelp32Snapshot" nocase
+	$string3 = "Process32First" nocase
+	$string4 = "Process32Next" nocase
+    condition:
+	all of ($string*)
+}
+
+rule Enumerate_Threads{
+    strings:
+	$string1 = "OpenProcess" nocase
+	$string2 = "CreateToolhelp32Snapshot" nocase
+	$string3 = "Thread32First" nocase
+	$string4 = "Thread32Next" nocase
+    condition:
+	all of ($string*)
+}
+
+rule Suspends_running_Threads{
+    strings:
+	$string1 = "SuspendThread" nocase
+    condition:
+	all of ($string*)
+}
+
+rule Resumes_suspended_Threads{
+    strings:
+	$string1 = "ResumeThread" nocase
+    condition:
+	all of ($string*)
+}
+
+rule Enumerates_Active_Window{
+    strings:
+	$string1 = "GetActiveWindow" nocase
+	$string2 = "GetForegroundWindow" nocase
     condition:
 	any of ($string*)
 }
