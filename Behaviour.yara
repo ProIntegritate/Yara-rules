@@ -1,4 +1,4 @@
-// Last update: 11:21 2020-02-02
+// Last update: 11:35 2020-02-02
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -44,6 +44,8 @@ rule INFO_UPX_Compression{
     strings:
         $upx = "UPX!"
     condition:
+	(uint16(0x00) == 0x5a4d or
+	(uint16(0x00) == 0x457f and uint16(0x02) == 0x464c)) and
 	$upx
 }
 
@@ -51,7 +53,7 @@ rule INFO_RichHeader{
     strings:
         $RichHeader = "Rich"
     condition:
-	$RichHeader
+	uint16(0x00) == 0x5a4d and $RichHeader
 }
 
 rule INFO_PDB_Path{
