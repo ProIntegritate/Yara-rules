@@ -1,7 +1,7 @@
-// Last update: 22:16 2020-02-01
+// Last update: 11:21 2020-02-02
 // Author: "@Pro_Integritate"
 // 
-// Should be used to give you a sorta-idea of what a file does.
+// Should be used to give you a sorta-idea of a files capabilities.
 //
 // Disclaimer: This is just a triage script and does not tell
 // you with 100% certainty that something is going on.
@@ -20,6 +20,14 @@ rule Windows_Executable{
 rule Linux_Executable{
     condition:
 	uint16(0x00) == 0x457f and uint16(0x02) == 0x464c
+}
+
+rule Scripting_Function_or_Subroutine{
+    strings:
+	$string1 = "function " nocase
+	$string2 = "sub " nocase
+    condition:
+	any of ($string*)
 }
 
 rule Windows_Executable_Base64{
@@ -62,7 +70,7 @@ rule MS_Office_Document_Legacy{
 
 // ---- Capabilities ----
 
-rule Networking_Capability{
+rule Network_Access{
     strings:
 	$net1 = "WSOCK32.dll" nocase
 	$net2 = "WININET.dll" nocase
@@ -85,8 +93,8 @@ rule Shell_External_Commands{
 	$string3 = "ProcessStartInfo" nocase
 	$string4 = "Scripting.FileSystemObject" nocase
 	$string5 = "Shell.Application" nocase
-        $string6 = "Shell" nocase // Very generic, i know... keep for now
-
+	$string6 = "WScript.Shell" nocase
+	$string7 = "CreateProcess" nocase
     condition:
 	any of ($string*)
 }
@@ -94,7 +102,7 @@ rule Shell_External_Commands{
 rule Decoding_Base64_Payload{
     strings:
         $string1 = "Convert" nocase
-	$string2 = "FromBase64String" nocase
+	$string2 = "FromBase64" nocase
 	$string3 = "MSXML2.DOMDocument" nocase
 	$string4 = "B64DECODE" nocase
     condition:
@@ -142,7 +150,7 @@ rule Payload_Download{
 	any of ($string*)
 }
 
-rule Crypto_Capability{
+rule Access_Cryptograpic_Libraries{
     strings:
         $string1 = "crypt32.dll" nocase
         $string2 = "Security.Cryptography" nocase // -"System."
@@ -152,7 +160,7 @@ rule Crypto_Capability{
 	any of ($string*)
 }
 
-rule Dotnet_FileWrite_Capability{
+rule Dotnet_FileWrite{
     strings:
 	$function1 = "System.IO" nocase // System.IO|0x00|File !
 	$function2 = "OI.metsyS" nocase // reversed
@@ -166,7 +174,7 @@ rule Dotnet_FileWrite_Capability{
 	any of ($function*) and any of ($string*)
 }
 
-rule Dotnet_FileMove_Capability{
+rule Dotnet_FileMove{
     strings:
         $hex = {53 79 73 74 65 6D 2E 49 4F 00 46 69 6C 65 00 4D 6F 76 65} // System.IO|0x00|File|0x00|Move
 	$string1 = "System.IO" nocase // Text for Scripting
@@ -181,7 +189,7 @@ rule Dotnet_FileMove_Capability{
 	($string2 and $string4 and $string6)
 }
 
-rule DotNet_Sockets_Capability{
+rule DotNet_Sockets{
     strings:
         $string1 = "Net.Sockets" nocase // -"System."
         $string2 = "stekcoS.teN" nocase // reversed // -"System."
@@ -189,7 +197,7 @@ rule DotNet_Sockets_Capability{
 	any of ($string*)
 }
 
-rule DotNet_Webclient_Capability{
+rule DotNet_Webclient{
     strings:
         $string1 = "Net.WebClient" nocase // -"System."
         $string2 = "tneilCbeW.teN" nocase // reversed // -"System."
@@ -197,7 +205,7 @@ rule DotNet_Webclient_Capability{
 	any of ($string*)
 }
 
-rule DotNet_DNS_Capability{
+rule DotNet_DNS{
     strings:
         $string1 = "System.Net" nocase
         $string2 = "teN.metsyS" nocase // reversed
@@ -210,7 +218,7 @@ rule DotNet_DNS_Capability{
 	$string5
 }
 
-rule DotNet_File_Decompression_Capability{
+rule DotNet_File_Decompression{
     strings:
         $string1 = "IO.Compression" nocase 
         $string2 = "noisserpmoC.OI" nocase 
@@ -488,7 +496,7 @@ rule Deletes_Services{
 	any of ($string*)
 }
 
-rule Terminate_process_capability{
+rule Terminate_process{
     strings:
         $string1 = "TerminateProcess" nocase
     condition:
@@ -548,6 +556,15 @@ rule Reflective_loader{
 	$string1 = "EntryPoint.Invoke" nocase
 	$string2 = "System.Reflection" nocase
 	$string3 = "Reflection.Assembly" nocase
+    condition:
+	$string1 and ($string2 or $string3)
+}
+
+rule Starting_Code_From_Payload{
+    strings:
+	$string1 = ".Invoke" nocase
+	$string2 = "System.Runtime" nocase
+	$string3 = "Runtime.InteropServices" nocase
     condition:
 	$string1 and ($string2 or $string3)
 }
@@ -641,3 +658,68 @@ rule Enumerates_Active_Window{
     condition:
 	any of ($string*)
 }
+
+rule Enumerates_Drive_Serial_Numbers{
+    strings:
+	$string1 = "volumeserialnumber" nocase
+    condition:
+	$string1
+}
+
+rule Enumerates_Available_Drives{
+    strings:
+	$string1 = "GetLogicalDrives" nocase
+    condition:
+	$string1
+}
+
+rule Enumerate_files{
+    strings:
+	$string1 = "FindFirstFile"
+	$string2 = "FindNextFile"
+    condition:
+	all of ($string*)
+}
+
+rule Creates_Folders{
+    strings:
+	$string1 = "CreateDirectory"
+    condition:
+	$string1
+}
+
+rule Deletes_Folders{
+    strings:
+	$string1 = "RemoveDirectory"
+    condition:
+	$string1
+}
+
+rule Create_Files{
+    strings:
+	$string1 = "CreateFile"
+    condition:
+	$string1
+}
+
+rule Copy_Files{
+    strings:
+	$string1 = "CopyFile"
+    condition:
+	$string1
+}
+
+rule Move_Files{
+    strings:
+	$string1 = "MoveFile"
+    condition:
+	$string1
+}
+
+rule Delete_Files{
+    strings:
+	$string1 = "DeleteFile"
+    condition:
+	$string1
+}
+
