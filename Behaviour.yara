@@ -770,3 +770,11 @@ rule Enumerate_Programs_windows{
     condition:
 	$string1
 }
+
+rule Java_Execute_Dynamic_Code{
+    strings:
+	$string1 = "eval(" nocase
+    condition:
+	$string1
+}
+
