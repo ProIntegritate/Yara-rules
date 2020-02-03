@@ -1,4 +1,4 @@
-// Last update: 19:04 2020-02-03
+// Last update: 19:08 2020-02-03
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -6,9 +6,6 @@
 // Disclaimer: This is just a triage script and does not tell
 // you with 100% certainty that something is going on.
 // Everything need to be validated - and that is your job.
-
-import "hash"
-import "pe"
 
 rule Windows_Executable{
     strings:
