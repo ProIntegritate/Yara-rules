@@ -1,4 +1,4 @@
-// Last update: 11:35 2020-02-02
+// Last update: 19:04 2020-02-03
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -359,6 +359,13 @@ rule Creating_Thread{
 	$String
 }
 
+rule Terminate_Thread{
+    strings:
+	$String = "TerminateThread" nocase
+    condition:
+	$String
+}
+
 rule Reading_Memory_In_Remote_Process{
     strings:
 	$String = "ReadProcessMemory" nocase
@@ -449,16 +456,17 @@ rule External_Scripting{
 
 rule System_folder_enumeration{
     strings:
-	$String1 = "SystemDirectory" nocase
-	$String2 = "yrotceriDmetsyS" nocase // reverse
-	$String3 = "Systemroot" nocase
-	$String4 = "toormetsyS" nocase // reverse
-	$String5 = "Windir" nocase
-	$String6 = "ridniW" nocase // reverse
-	$String7 = "GetSystemWindowsDirectory" nocase
-	$String8 = "GetWindowsDirectory" nocase
+	$string1 = "SystemDirectory" nocase
+	$string2 = "yrotceriDmetsyS" nocase // reverse
+	$string3 = "Systemroot" nocase
+	$string4 = "toormetsyS" nocase // reverse
+	$string5 = "Windir" nocase
+	$string6 = "ridniW" nocase // reverse
+	$string7 = "GetSystemWindowsDirectory" nocase
+	$string8 = "GetWindowsDirectory" nocase
+	$string9 = "GetSystemDirectory" nocase
     condition:
-	any of ($String*)
+	any of ($string*)
 }
 
 rule String_obfuscation{
@@ -470,6 +478,7 @@ rule String_obfuscation{
 	$string5 = {22 2B 22}  	 	//  "+"
 	$string6 = "decode" nocase
 	$string7 = "replace" nocase
+	$string8 = "unescape" nocase
     condition:
 	any of ($string*)
 }
@@ -725,3 +734,39 @@ rule Delete_Files{
 	$string1
 }
 
+rule Enumerate_filesystem_info{
+    strings:
+	$string1 = "GetVolumeInformation"
+    condition:
+	$string1
+}
+
+rule Enumerate_SystemInfo{
+    strings:
+	$string1 = "GetSystemInfo" // x86
+	$string2 = "GetNativeSystemInfo" // x64
+    condition:
+	any of ($string*)
+}
+
+rule Enumerate_loaded_modules{
+    strings:
+	$string1 = "GetWindowModuleFileNameA"
+	$string2 = "GetModuleFileName"
+    condition:
+	any of ($string*)
+}
+
+rule Search_for_Specific_Program_Window{
+    strings:
+	$string1 = "FindWindow"
+    condition:
+	$string1
+}
+
+rule Enumerate_Programs_windows{
+    strings:
+	$string1 = "EnumWindows"
+    condition:
+	$string1
+}
