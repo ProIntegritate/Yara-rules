@@ -1,4 +1,4 @@
-// Last update: 19:08 2020-02-03
+// Last update: 19:12 2020-02-04
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -564,8 +564,11 @@ rule Reflective_loader{
 	$string1 = "EntryPoint.Invoke" nocase
 	$string2 = "System.Reflection" nocase
 	$string3 = "Reflection.Assembly" nocase
+	$string4 = "::Load" nocase
+	$string5 = ".Invoke" nocase
     condition:
-	$string1 and ($string2 or $string3)
+	$string1 and ($string2 or $string3) or
+	($string3 and $string4 and $string5)
 }
 
 rule Starting_Code_From_Payload{
@@ -774,4 +777,3 @@ rule Java_Execute_Dynamic_Code{
     condition:
 	$string1
 }
-
