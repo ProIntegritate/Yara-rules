@@ -1,4 +1,4 @@
-// Last update: 19:12 2020-02-04
+// Last update: 17:52 2020-02-05
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -771,9 +771,14 @@ rule Enumerate_Programs_windows{
 	$string1
 }
 
-rule Java_Execute_Dynamic_Code{
+rule Execute_Dynamic_Script_Code{
     strings:
-	$string1 = "eval(" nocase
+	$string1 = "eval " nocase //java
+	$string2 = "eval(" nocase //java
+	$string3 = "Invoke-Expression " nocase //powershell
+	$string4 = "Invoke-Expression(" nocase //powershell
+	$string5 = "iex " nocase //powershell
+	$string6 = "iex(" nocase //powershell
     condition:
-	$string1
+	any of ($string*)
 }
