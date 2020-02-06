@@ -1,4 +1,4 @@
-// Last update: 17:52 2020-02-05
+// Last update: 10:14 2020-02-06
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -81,6 +81,7 @@ rule Network_Access{
 	$net8 = "NETAPI32.dll" nocase
 	$net9 = "WINHTTP.dll" nocase
 	$net10 = "mswsock.dll" nocase
+	$net11 = "WSAStartup" nocase
     condition:
 	any of ($net*)
 }
@@ -200,6 +201,8 @@ rule DotNet_Webclient{
     strings:
         $string1 = "Net.WebClient" nocase // -"System."
         $string2 = "tneilCbeW.teN" nocase // reversed // -"System."
+	$string3 = "Net.Webrequest" nocase // -"System."
+	$string4 = "tseuqerbeW.teN" nocase // -"System."
     condition:
 	any of ($string*)
 }
@@ -782,3 +785,5 @@ rule Execute_Dynamic_Script_Code{
     condition:
 	any of ($string*)
 }
+
+
