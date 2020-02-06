@@ -1,4 +1,4 @@
-// Last update: 12:37 2020-02-06
+// Last update: 22:51 2020-02-06
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -126,8 +126,10 @@ rule UserAgent{
     strings:
         $string1 = "User-Agent" nocase
         $string2 = "tnegA-resU" nocase // reversed
+	$common1 = "(Windows " nocase
+	$common2 = "WOW64;" nocase
     condition:
-	any of ($string*)
+	any of ($string*) or ($common1 and $common2)
 }
 
 rule Sets_specific_HTTP_Useragent{
@@ -421,6 +423,13 @@ rule Powershell_Execution_Bypass{
     condition:
 	($String1 and $String3) or
 	($String2 and $String4)
+}
+
+rule Powershell_Registry_Key_Access{
+    strings:
+	$String1 = "Policies\\Microsoft\\Windows\\PowerShell" nocase ascii wide
+    condition:
+	$String1
 }
 
 rule Filesystem_Scripting{
@@ -806,12 +815,14 @@ rule Enumerate_Programs_windows{
 
 rule Execute_Dynamic_Script_Code{
     strings:
-	$string1 = "eval " nocase //java
-	$string2 = "eval(" nocase //java
-	$string3 = "Invoke-Expression " nocase //powershell
-	$string4 = "Invoke-Expression(" nocase //powershell
-	$string5 = "iex " nocase //powershell
-	$string6 = "iex(" nocase //powershell
+	$string1 = "eval " nocase 		//java
+	$string2 = "eval(" nocase
+	$string3 = "Invoke-Expression" nocase 	//powershell
+	$string4 = " iex" nocase 
+	$string5 = "iex " nocase 
+	$string6 = "iex(" nocase 
+	$string7 = "|iex" nocase 
+
     condition:
 	any of ($string*)
 }
@@ -866,5 +877,14 @@ rule Delete_VolumeShadowCopy{
 	$string2 = "delete shadow" nocase
     condition:
 	$string1 and $string2
+}
+
+rule SessionCookie{
+    strings:
+        $string1 = "Headers" nocase
+        $string2 = "Cookie" nocase
+        $string3 = "session=" nocase
+    condition:
+	all of ($string*)
 }
 
