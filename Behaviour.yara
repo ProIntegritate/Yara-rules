@@ -1,4 +1,4 @@
-// Last update: 10:14 2020-02-06
+// Last update: 12:37 2020-02-06
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -105,8 +105,9 @@ rule Decoding_Base64_Payload{
 	$string2 = "FromBase64" nocase
 	$string3 = "MSXML2.DOMDocument" nocase
 	$string4 = "B64DECODE" nocase
+	$string5 = "Base64ToString" nocase
     condition:
-	($string1 and $string2) or ($string3 and $string4)
+	($string1 and $string2) or ($string3 and $string4) or $string5
 }
 
 rule URL{
@@ -258,6 +259,8 @@ rule Firewall_Configuration_Change{
         $string4 = "llawerifvda hsten" nocase // reversed
         $string5 = "FirewallAPI" nocase
         $string6 = "IPAllaweriF" nocase // reversed
+	$string7 = "netsh firewall" nocase
+	$string8 = "llawerif hsten" nocase
     condition:
 	any of ($string*)
 }
@@ -288,6 +291,15 @@ rule Recon_WMIC{
 	any of ($string*)
 }
 
+rule Generic_Recon_Indicator{
+    strings:
+        $string1 = "GetOEMCP" nocase
+        $string2 = "GetTimeZoneInformation" nocase
+        $string3 = "EnumSystemLocales" nocase
+    condition:
+	any of ($string*)
+}
+
 rule Registry_Query_Infomation{
     strings:
         $open = "RegOpenKey" nocase
@@ -295,8 +307,10 @@ rule Registry_Query_Infomation{
         $string2 = "RegEnumKey" nocase
 	$dotnetstring1 = "Win32.Registry" nocase
 	$dotnetstring2 = "GetValue" nocase
+	$api1 = "GetValueFromRegistry" nocase
+	$api2 = "ZwQueryValueKey"
     condition:
-	$open and any of ($string*) or all of ($dotnetstring*)
+	$open and any of ($string*) or all of ($dotnetstring*) or any of ($api*)
 }
 
 rule Registry_Write_Infomation{
@@ -307,8 +321,18 @@ rule Registry_Write_Infomation{
         $string3 = "RegSetValue" nocase
 	$dotnetstring1 = "Win32.Registry" nocase
 	$dotnetstring2 = "SetValue" nocase
+	$api1 = "ZwSetValueKey"
     condition:
-	$open and any of ($string*) or all of ($dotnetstring*)
+	$open and any of ($string*) or all of ($dotnetstring*) or $api1
+}
+
+rule Registry_Delete_Infomation{
+    strings:
+	$api1 = "DeleteValueFromRegistry"
+	$api2 = "RegDeleteKey"
+	$api3 = "RegistryKey.DeleteSubKey"
+    condition:
+	any of ($api*)
 }
 
 rule Document_RTF_Obj_Payload{
@@ -516,19 +540,16 @@ rule Terminate_process{
 
 rule Reboot_Persistance{
     strings:
-	$String1 = "currentversion" nocase	// Currentversion/Run
-	$String2 = "run" nocase			// Note: some FP's with this.
-	$String3 = "noisreVtnerruc" nocase	// Reversed
-	$String4 = "nur" nocase
-	$String5 = "schtasks" nocase		// Schtasks.exe /Create
-	$String6 = "create" nocase
-	$String7 = "sksathcs" nocase		// Reversed
-	$String8 = "etaerc" nocase
+	$String1 = "currentversion\\run" nocase ascii wide // Currentversion\Run, can be scripted (ascii) or compiled (Wide)
+	$String2 = "nur\\noisreVtnerruc" nocase ascii // Reversed
+	$String3 = "schtasks" nocase		// Schtasks.exe /Create
+	$String4 = "create" nocase
+	$String5 = "sksathcs" nocase		// Reversed
+	$String6 = "etaerc" nocase
     condition:
-	($String1 and $String2) or
+	($String1 or $String2) or
 	($String3 and $String4) or
-	($String5 and $String6) or
-	($String7 and $String8)
+	($String5 and $String6)
 }
 
 rule LOLBins{
@@ -733,9 +754,18 @@ rule Move_Files{
 rule Delete_Files{
     strings:
 	$string1 = "DeleteFile"
+	$string2 = "Kill"
+    condition:
+	any of ($string*)
+}
+
+rule Read_Files{
+    strings:
+	$string1 = "ReadFile"
     condition:
 	$string1
 }
+
 
 rule Enumerate_filesystem_info{
     strings:
@@ -786,4 +816,55 @@ rule Execute_Dynamic_Script_Code{
 	any of ($string*)
 }
 
+rule console_application{
+    strings:
+	$string1 = "GetCommandLine" nocase
+    condition:
+	$string1
+}
+
+rule Retrieves_environment_strings{
+    strings:
+	$string1 = "GetEnvironmentStrings" nocase
+	$string2 = "environ(" nocase
+	$string3 = "environ " nocase
+    condition:
+	any of ($string*)
+}
+
+rule VisualBasic6_Runtime{
+    strings:
+	$string1 = "MSVBVM60.DLL" nocase
+	$string2 = "VB6.OLB" nocase
+	$string3 = "VBA6.DLL" nocase
+	$string4 = "__vba" nocase
+    condition:
+	2 of ($string*)
+}
+
+rule Unpack_GZipStream{
+    strings:
+        $string1 = "GZipStream" nocase 
+	$string2 = "decompress" nocase 
+	$string3 = "deflate" nocase 
+    condition:
+	$string1 and ($string2 or $string3)
+}
+
+rule HTTP_POST_Information{
+    strings:
+        $string1 = "HttpMethod(" nocase 
+	$string2 = "HttpMethod " nocase 
+	$string3 = "POST" nocase 
+    condition:
+	($string1 or $string2) and $string3
+}
+
+rule Delete_VolumeShadowCopy{
+    strings:
+        $string1 = "vssadmin" nocase
+	$string2 = "delete shadow" nocase
+    condition:
+	$string1 and $string2
+}
 
