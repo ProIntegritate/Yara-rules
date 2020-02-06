@@ -1,4 +1,4 @@
-// Last update: 22:51 2020-02-06
+// Last update: 23:04 2020-02-06
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -307,6 +307,7 @@ rule Registry_Query_Infomation{
         $open = "RegOpenKey" nocase
         $string1 = "RegQueryValue" nocase
         $string2 = "RegEnumKey" nocase
+	$string3 = "RegQueryMultipleValues" nocase
 	$dotnetstring1 = "Win32.Registry" nocase
 	$dotnetstring2 = "GetValue" nocase
 	$api1 = "GetValueFromRegistry" nocase
@@ -423,6 +424,14 @@ rule Powershell_Execution_Bypass{
     condition:
 	($String1 and $String3) or
 	($String2 and $String4)
+}
+
+rule Powershell_EncodedCommand_Usage{
+    strings:
+	$String1 = "powershell" nocase
+	$String2 = "-EncodedCommand" nocase
+    condition:
+	($String1 and $String2)
 }
 
 rule Powershell_Registry_Key_Access{
