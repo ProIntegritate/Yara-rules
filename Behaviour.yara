@@ -1,4 +1,4 @@
-// Last update: 23:04 2020-02-06
+// Last update: 23:26 2020-02-06
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -7,19 +7,19 @@
 // you with 100% certainty that something is going on.
 // Everything need to be validated - and that is your job.
 
-rule Windows_Executable{
+rule INFO_Windows_Executable{
     strings:
         $pe = "PE"
     condition:
 	uint16(0x00) == 0x5a4d and $pe
 }
 
-rule Linux_Executable{
+rule INFO_Linux_Executable{
     condition:
 	uint16(0x00) == 0x457f and uint16(0x02) == 0x464c
 }
 
-rule Scripting_Function_or_Subroutine{
+rule INFO_Scripting_Function_or_Subroutine{
     strings:
 	$string1 = "function " nocase
 	$string2 = "sub " nocase
@@ -60,7 +60,14 @@ rule INFO_PDB_Path{
 	any of ($string*)
 }
 
-rule MS_Office_Document_Legacy{
+rule INFO_Build_System_path{
+    strings:
+        $string1 = "C:\\Users\\" nocase ascii wide
+    condition:
+	$string1
+}
+
+rule INFO_MS_Office_Document_Legacy{
     condition:
 	uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
 	uint16(0x19) == 0x0320
@@ -836,7 +843,7 @@ rule Execute_Dynamic_Script_Code{
 	any of ($string*)
 }
 
-rule console_application{
+rule Console_application{
     strings:
 	$string1 = "GetCommandLine" nocase
     condition:
