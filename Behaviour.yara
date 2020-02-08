@@ -1,4 +1,4 @@
-// Last update: 10:39 2020-02-08
+// Last update: 18:06 2020-02-08
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -21,18 +21,18 @@ rule INFO_Linux_Executable{
 
 rule INFO_Scripting_Function_or_Subroutine{
     strings:
-	$string1 = "function " nocase
-	$string2 = "sub " nocase
+	$string1 = "function " nocase ascii wide
+	$string2 = "sub " nocase ascii wide
     condition:
 	any of ($string*)
 }
 
 rule Windows_Executable_Base64{
     strings:
-        $string1 = "TVqQ"
-	$string2 = "TVpQ"
-        $string3 = "QqVT" // Reversed
-	$string4 = "QpVT" // Reversed
+        $string1 = "TVqQ" ascii wide
+	$string2 = "TVpQ" ascii wide
+        $string3 = "QqVT" ascii wide // Reversed
+	$string4 = "QpVT" ascii wide // Reversed
     condition:
 	any of ($string*)
 }
@@ -55,7 +55,7 @@ rule INFO_RichHeader{
 
 rule INFO_PDB_Path{
     strings:
-        $string1 = ".pdb" nocase
+        $string1 = ".pdb" nocase nocase ascii wide
     condition:
 	any of ($string*)
 }
@@ -78,71 +78,71 @@ rule INFO_MS_Office_Document_Legacy{
 
 rule Network_Access{
     strings:
-	$net1 = "WSOCK32.dll" nocase
-	$net2 = "WININET.dll" nocase
-	$net3 = "IPHLPAPI.DLL" nocase
-	$net4 = "ws2_32.dll" nocase
-	$net5 = "wsock32.dll" nocase
-	$net6 = "wininet.dll" nocase
-	$net7 = "winhttp.dll" nocase
-	$net8 = "NETAPI32.dll" nocase
-	$net9 = "WINHTTP.dll" nocase
-	$net10 = "mswsock.dll" nocase
-	$net11 = "WSAStartup" nocase
+	$net1 = "WSOCK32.dll" nocase ascii wide
+	$net2 = "WININET.dll" nocase ascii wide
+	$net3 = "IPHLPAPI.DLL" nocase ascii wide
+	$net4 = "ws2_32.dll" nocase ascii wide
+	$net5 = "wsock32.dll" nocase ascii wide
+	$net6 = "wininet.dll" nocase ascii wide
+	$net7 = "NETAPI32.dll" nocase ascii wide
+	$net8 = "mswsock.dll" nocase ascii wide
+	$net9 = "WSAStartup" nocase ascii wide
     condition:
 	any of ($net*)
 }
 
+
+
 rule Shell_External_Commands{
     strings:
-	$string1 = "shell32.dll" nocase
-	$string2 = "ShellExecute" nocase
-	$string3 = "ProcessStartInfo" nocase
-	$string4 = "Scripting.FileSystemObject" nocase
-	$string5 = "Shell.Application" nocase
-	$string6 = "WScript.Shell" nocase
-	$string7 = "CreateProcess" nocase
+	$string1 = "shell32.dll" nocase ascii wide
+	$string2 = "ShellExecute" nocase ascii wide
+	$string3 = "ProcessStartInfo" nocase ascii wide
+	$string4 = "Scripting.FileSystemObject" nocase ascii wide
+	$string5 = "Shell.Application" nocase ascii wide
+	$string6 = "WScript.Shell" nocase ascii wide
+	$string7 = "CreateProcess" nocase ascii wide
     condition:
 	any of ($string*)
 }
 
 rule Decoding_Base64_Payload{
     strings:
-        $string1 = "Convert" nocase
-	$string2 = "FromBase64" nocase
-	$string3 = "MSXML2.DOMDocument" nocase
-	$string4 = "B64DECODE" nocase
-	$string5 = "Base64ToString" nocase
+        $string1 = "Convert" nocase ascii wide
+	$string2 = "FromBase64" nocase ascii wide
+	$string3 = "MSXML2.DOMDocument" nocase ascii wide
+	$string4 = "B64DECODE" nocase ascii wide
+	$string5 = "Base64ToString" nocase ascii wide
     condition:
 	($string1 and $string2) or ($string3 and $string4) or $string5
 }
 
 rule URL{
     strings:
-        $string1 = "https:" nocase
-        $string2 = ":sptth" nocase // reversed
-	$string3 = "http:" nocase
-	$string4 = ":ptth" nocase // reversed
-	$string5 = "ftp:" nocase
-	$string6 = ":ptf" nocase // reversed
+        $string1 = "https:" nocase ascii wide
+        $string2 = ":sptth" nocase ascii wide // reversed
+	$string3 = "http:" nocase ascii wide
+	$string4 = ":ptth" nocase ascii wide // reversed
+	$string5 = "ftp:" nocase ascii wide
+	$string6 = ":ptf" nocase ascii wide // reversed
     condition:
 	any of ($string*)
 }
 
 rule UserAgent{
     strings:
-        $string1 = "User-Agent" nocase
-        $string2 = "tnegA-resU" nocase // reversed
-	$common1 = "(Windows " nocase
-	$common2 = "WOW64;" nocase
+        $string1 = "User-Agent" nocase ascii wide
+        $string2 = "tnegA-resU" nocase ascii wide // reversed
+	$common1 = "(Windows " nocase ascii wide
+	$common2 = "WOW64;" nocase ascii wide
     condition:
 	any of ($string*) or ($common1 and $common2)
 }
 
 rule Sets_specific_HTTP_Useragent{
     strings:
-	$string1 = "SetRequestHeader" nocase
-	$string2 = "User-Agent:" nocase
+	$string1 = "SetRequestHeader" nocase ascii wide
+	$string2 = "User-Agent" nocase ascii wide
     condition:
 	all of ($string*)
 }
@@ -150,36 +150,36 @@ rule Sets_specific_HTTP_Useragent{
 
 rule Payload_Download{
     strings:
-        $string1 = "DownloadFile" nocase
-        $string2 = "eliFdaolnwoD" nocase // reversed
-        $string3 = "DownloadString" nocase
-        $string4 = "gnirtSdaolnwoD" nocase // reversed
-        $string5 = "DownloadData" nocase
-        $string6 = "ataDdaolnwoD" nocase // reversed
+        $string1 = "DownloadFile" nocase ascii wide
+        $string2 = "eliFdaolnwoD" nocase ascii wide // reversed
+        $string3 = "DownloadString" nocase ascii wide
+        $string4 = "gnirtSdaolnwoD" nocase ascii wide // reversed
+        $string5 = "DownloadData" nocase ascii wide
+        $string6 = "ataDdaolnwoD" nocase ascii wide // reversed
     condition:
 	any of ($string*)
 }
 
 rule Access_Cryptograpic_Libraries{
     strings:
-        $string1 = "crypt32.dll" nocase
-        $string2 = "Security.Cryptography" nocase // -"System."
-	$string3 = "yhpargotpyrC.ytiruceS" nocase
-        $string4 = "bcrypt.dll" nocase
+        $string1 = "crypt32.dll" nocase ascii wide
+        $string2 = "Security.Cryptography" nocase ascii wide
+	$string3 = "yhpargotpyrC.ytiruceS" nocase ascii wide
+        $string4 = "bcrypt.dll" nocase ascii wide
     condition:
 	any of ($string*)
 }
 
 rule Dotnet_FileWrite{
     strings:
-	$function1 = "System.IO" nocase // System.IO|0x00|File !
-	$function2 = "OI.metsyS" nocase // reversed
-        $string1 = "WriteAllBytes" nocase
-        $string2 = "setyBllAetirW" nocase // reversed
-        $string3 = "WriteAllLines" nocase
-        $string4 = "seniLllAetirW" nocase // reversed
-        $string5 = "WriteAllText" nocase
-        $string6 = "txeTllAetirW" nocase // reversed
+	$function1 = "System.IO" nocase ascii wide // System.IO|0x00|File !
+	$function2 = "OI.metsyS" nocase ascii wide // reversed
+        $string1 = "WriteAllBytes" nocase ascii wide
+        $string2 = "setyBllAetirW" nocase ascii wide // reversed
+        $string3 = "WriteAllLines" nocase ascii wide
+        $string4 = "seniLllAetirW" nocase ascii wide // reversed
+        $string5 = "WriteAllText" nocase ascii wide
+        $string6 = "txeTllAetirW" nocase ascii wide // reversed
     condition:
 	any of ($function*) and any of ($string*)
 }
@@ -187,12 +187,12 @@ rule Dotnet_FileWrite{
 rule Dotnet_FileMove{
     strings:
         $hex = {53 79 73 74 65 6D 2E 49 4F 00 46 69 6C 65 00 4D 6F 76 65} // System.IO|0x00|File|0x00|Move
-	$string1 = "System.IO" nocase // Text for Scripting
-	$string2 = "OI.netsyS" nocase // reversed
-	$string3 = "File" nocase
-	$string4 = "eliF" nocase // reversed
-	$string5 = "Move" nocase 
-	$string6 = "evoM" nocase // reversed
+	$string1 = "System.IO" nocase ascii wide // Text for Scripting
+	$string2 = "OI.netsyS" nocase ascii wide // reversed
+	$string3 = "File" nocase ascii wide
+	$string4 = "eliF" nocase ascii wide // reversed
+	$string5 = "Move" nocase ascii wide 
+	$string6 = "evoM" nocase ascii wide // reversed
     condition:
 	$hex or
 	($string1 and $string3 and $string5) or
@@ -201,124 +201,135 @@ rule Dotnet_FileMove{
 
 rule DotNet_Sockets{
     strings:
-        $string1 = "Net.Sockets" nocase // -"System."
-        $string2 = "stekcoS.teN" nocase // reversed // -"System."
+        $string1 = "Net.Sockets" nocase ascii wide // -"System." nocase ascii wide
+        $string2 = "stekcoS.teN" nocase ascii wide // reversed // -"System." nocase ascii wide
     condition:
 	any of ($string*)
 }
 
 rule DotNet_Webclient{
     strings:
-        $string1 = "Net.WebClient" nocase // -"System."
-        $string2 = "tneilCbeW.teN" nocase // reversed // -"System."
-	$string3 = "Net.Webrequest" nocase // -"System."
-	$string4 = "tseuqerbeW.teN" nocase // -"System."
+        $string1 = "Net.WebClient" nocase ascii wide // -"System."
+        $string2 = "tneilCbeW.teN" nocase ascii wide // reversed // -"System."
+	$string3 = "Net.Webrequest" nocase ascii wide // -"System."
+	$string4 = "tseuqerbeW.teN" nocase ascii wide // -"System."
     condition:
 	any of ($string*)
 }
 
+rule Legacy_WebQuery{
+    strings:
+	$string1 = "winhttp.dll" nocase ascii wide
+	$string2 = "WinHttpOpen" nocase ascii wide
+    condition:
+	$string1 and $string2
+}
+
 rule DotNet_DNS{
     strings:
-        $string1 = "System.Net" nocase
-        $string2 = "teN.metsyS" nocase // reversed
-	$string3 = "Dns" nocase
-	$string4 = "snD" nocase // reversed
-	$string5 = "Net.Dns" // Scripts
+        $string1 = "Net.dns" nocase ascii wide
+        $string2 = "snD.teN" nocase ascii wide // reversed
     condition:
-	($string1 and $string3) or
-	($string2 and $string4) or
-	$string5
+	any of ($string*)
+}
+
+rule Legacy_DNS{
+    strings:
+        $string1 = "DnsQuery" nocase ascii wide
+        $string2 = "DNSAPI.dll" nocase ascii wide
+    condition:
+	$string1 and $string2
 }
 
 rule DotNet_File_Decompression{
     strings:
-        $string1 = "IO.Compression" nocase 
-        $string2 = "noisserpmoC.OI" nocase 
-        $method1 = "Deflate" nocase
-        $method2 = "etalfeD" nocase // reversed
-        $method3 = "Decompress" nocase
-        $method4 = "sserpmoceD" nocase // reversed
+        $string1 = "IO.Compression" nocase ascii wide
+        $string2 = "noisserpmoC.OI" nocase ascii wide
+        $method1 = "Deflate" nocase ascii wide 
+        $method2 = "etalfeD" nocase ascii wide// reversed
+        $method3 = "Decompress" nocase ascii wide 
+        $method4 = "sserpmoceD" nocase ascii wide // reversed
     condition:
 	any of ($string*) and any of ($method*)
 }
 
 rule Reading_Keyboard_Input{
     strings:
-        $string1 = "GetAsyncKeyState" nocase
-	$string2 = "SetWindowsHook" nocase
+        $string1 = "GetAsyncKeyState" nocase ascii wide 
+	$string2 = "SetWindowsHook" nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule HTTP_Binary_transfer{
     strings:
-        $string1 = "application/octet-stream" nocase
-        $string2 = "maerts-tetco/noitacilppa" nocase // reversed
-	$string3 = "application/zip" nocase
-	$string4 = "piz/noitacilppa" nocase // reversed
+        $string1 = "application/octet-stream" nocase ascii wide 
+        $string2 = "maerts-tetco/noitacilppa" nocase ascii wide  // reversed
+	$string3 = "application/zip" nocase ascii wide 
+	$string4 = "piz/noitacilppa" nocase ascii wide  // reversed
     condition:
 	any of ($string*)
 }
 
 rule Firewall_Configuration_Change{
     strings:
-        $string1 = "iptables" nocase
-        $string2 = "selbatpi" nocase // reversed
-        $string3 = "netsh advfirewall" nocase
-        $string4 = "llawerifvda hsten" nocase // reversed
-        $string5 = "FirewallAPI" nocase
-        $string6 = "IPAllaweriF" nocase // reversed
-	$string7 = "netsh firewall" nocase
-	$string8 = "llawerif hsten" nocase
+        $string1 = "iptables" nocase ascii wide 
+        $string2 = "selbatpi" nocase ascii wide  // reversed
+        $string3 = "netsh advfirewall" nocase ascii wide 
+        $string4 = "llawerifvda hsten" nocase ascii wide  // reversed
+        $string5 = "FirewallAPI" nocase ascii wide 
+        $string6 = "IPAllaweriF" nocase ascii wide  // reversed
+	$string7 = "netsh firewall" nocase ascii wide 
+	$string8 = "llawerif hsten" nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule Unconventional_Build_Tools{
     strings:
-        $string1 = "installutil.exe" nocase
-        $string2 = "exe.litullatsni" nocase
-        $string3 = "msbuild.exe" nocase
-        $string4 = "exe.dliubsm" nocase
-        $string5 = "csc.exe" nocase
-        $string6 = "exe.csc" nocase
-        $string7 = "vbc.exe" nocase
-        $string8 = "exe.cbv" nocase
-        $string9 = "ilasm.exe" nocase
-        $string10 = "exe.msali" nocase
-        $string11 = "jsc.exe" nocase
-        $string12 = "exe.csj" nocase
+        $string1 = "installutil.exe" nocase ascii wide 
+        $string2 = "exe.litullatsni" nocase ascii wide 
+        $string3 = "msbuild.exe" nocase ascii wide 
+        $string4 = "exe.dliubsm" nocase ascii wide 
+        $string5 = "csc.exe" nocase ascii wide 
+        $string6 = "exe.csc" nocase ascii wide 
+        $string7 = "vbc.exe" nocase ascii wide 
+        $string8 = "exe.cbv" nocase ascii wide 
+        $string9 = "ilasm.exe" nocase ascii wide 
+        $string10 = "exe.msali" nocase ascii wide 
+        $string11 = "jsc.exe" nocase ascii wide 
+        $string12 = "exe.csj" nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule Recon_WMIC{
     strings:
-        $string1 = "wmic.exe" nocase
-        $string2 = "exe.cimw" nocase
+        $string1 = "wmic.exe" nocase ascii wide 
+        $string2 = "exe.cimw" nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule Generic_Recon_Indicator{
     strings:
-        $string1 = "GetOEMCP" nocase
-        $string2 = "GetTimeZoneInformation" nocase
-        $string3 = "EnumSystemLocales" nocase
-        $string4 = "systeminfo" nocase
+        $string1 = "GetOEMCP" nocase ascii wide 
+        $string2 = "GetTimeZoneInformation" nocase ascii wide 
+        $string3 = "EnumSystemLocales" nocase ascii wide 
+        $string4 = "systeminfo" nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule Registry_Query_Infomation{
     strings:
-        $open = "RegOpenKey" nocase
-        $string1 = "RegQueryValue" nocase
-        $string2 = "RegEnumKey" nocase
-	$string3 = "RegQueryMultipleValues" nocase
-	$dotnetstring1 = "Win32.Registry" nocase
-	$dotnetstring2 = "GetValue" nocase
-	$api1 = "GetValueFromRegistry" nocase
+        $open = "RegOpenKey" nocase ascii wide 
+        $string1 = "RegQueryValue" nocase ascii wide 
+        $string2 = "RegEnumKey" nocase ascii wide 
+	$string3 = "RegQueryMultipleValues" nocase ascii wide 
+	$dotnetstring1 = "Win32.Registry" nocase ascii wide 
+	$dotnetstring2 = "GetValue" nocase ascii wide 
+	$api1 = "GetValueFromRegistry" nocase ascii wide 
 	$api2 = "ZwQueryValueKey"
     condition:
 	($open and any of ($string*)) or all of ($dotnetstring*) or any of ($api*)
@@ -327,11 +338,11 @@ rule Registry_Query_Infomation{
 rule Registry_Write_Infomation{
     strings:
 	$open = "RegOpenKey"
-        $string1 = "RegCreateKey" nocase
-        $string2 = "RegDeleteKey" nocase
-        $string3 = "RegSetValue" nocase
-	$dotnetstring1 = "Win32.Registry" nocase
-	$dotnetstring2 = "SetValue" nocase
+        $string1 = "RegCreateKey" nocase ascii wide 
+        $string2 = "RegDeleteKey" nocase ascii wide 
+        $string3 = "RegSetValue" nocase ascii wide 
+	$dotnetstring1 = "Win32.Registry" nocase ascii wide 
+	$dotnetstring2 = "SetValue" nocase ascii wide 
 	$api1 = "ZwSetValueKey"
     condition:
 	($open and any of ($string*)) or all of ($dotnetstring*) or $api1
@@ -382,53 +393,53 @@ rule RAR_Stream{ // Position independend, not Magic bytes specifically
 
 rule Creating_Thread_In_Remote_Process{
     strings:
-	$String = "CreateRemoteThread" nocase
+	$String = "CreateRemoteThread" nocase ascii wide 
     condition:
 	$String
 }
 
 rule Creating_Thread{
     strings:
-	$String = "CreateThread" nocase
+	$String = "CreateThread" nocase ascii wide 
     condition:
 	$String
 }
 
 rule Terminate_Thread{
     strings:
-	$String = "TerminateThread" nocase
+	$String = "TerminateThread" nocase ascii wide 
     condition:
 	$String
 }
 
 rule Reading_Memory_In_Remote_Process{
     strings:
-	$String = "ReadProcessMemory" nocase
+	$String = "ReadProcessMemory" nocase ascii wide 
     condition:
 	$String
 }
 
 rule Writing_Memory_In_Remote_Process{
     strings:
-	$String = "WriteProcessMemory" nocase
+	$String = "WriteProcessMemory" nocase ascii wide 
     condition:
 	$String
 }
 
 rule Calling_Debug_Privileges{
     strings:
-	$String1 = "AdjustTokenPrivileges" nocase
-	$String2 = "SeDebugPrivilege" nocase
+	$String1 = "AdjustTokenPrivileges" nocase ascii wide 
+	$String2 = "SeDebugPrivilege" nocase ascii wide 
     condition:
 	all of ($String*)
 }
 
 rule Powershell_Execution_Bypass{
     strings:
-	$String1 = "powershell.exe" nocase
-	$String2 = "exe.llehsrewop" nocase // reverse
-	$String3 = "-Exec Bypass" nocase
-	$String4 = "ssapyB cexE-" nocase // reverse
+	$String1 = "powershell.exe" nocase ascii wide 
+	$String2 = "exe.llehsrewop" nocase ascii wide  // reverse
+	$String3 = "-Exec Bypass" nocase ascii wide 
+	$String4 = "ssapyB cexE-" nocase ascii wide  // reverse
     condition:
 	($String1 and $String3) or
 	($String2 and $String4)
@@ -436,8 +447,8 @@ rule Powershell_Execution_Bypass{
 
 rule Powershell_EncodedCommand_Usage{
     strings:
-	$String1 = "powershell" nocase
-	$String2 = "-EncodedCommand" nocase
+	$String1 = "powershell" nocase ascii wide 
+	$String2 = "-EncodedCommand" nocase ascii wide 
     condition:
 	($String1 and $String2)
 }
@@ -451,10 +462,10 @@ rule Powershell_Registry_Key_Access{
 
 rule Filesystem_Scripting{
     strings:
-	$String1 = "Scripting.FileSystemObject" nocase
-	$String2 = "tcejbOmetsySeliF.gnitpircS" nocase
-	$String3 = "Wscript.Shell" nocase
-	$String4 = "llehS.tpircsW" nocase
+	$String1 = "Scripting.FileSystemObject" nocase ascii wide 
+	$String2 = "tcejbOmetsySeliF.gnitpircS" nocase ascii wide 
+	$String3 = "Wscript.Shell" nocase ascii wide 
+	$String4 = "llehS.tpircsW" nocase ascii wide 
     condition:
 	($String1 and $String3) or
 	($String2 and $String4)
@@ -462,9 +473,9 @@ rule Filesystem_Scripting{
 
 rule Checks_For_Debugger{
     strings:
-	$String1 = "IsDebuggerPresent" nocase // Sub process
-	$String2 = "CheckRemoteDebuggerPresent" nocase // Paralell process
-	$String3 = "KdDebuggerEnabled" nocase // Kernel call
+	$String1 = "IsDebuggerPresent" nocase ascii wide  // Sub process
+	$String2 = "CheckRemoteDebuggerPresent" nocase ascii wide  // Paralell process
+	$String3 = "KdDebuggerEnabled" nocase ascii wide  // Kernel call
     condition:
 	any of ($String*)
 }
@@ -496,70 +507,70 @@ rule Autoit_Scripting{
 
 rule External_Scripting{
     strings:
-	$String1 = "psexec.exe" nocase
-	$String2 = "psExec64.exe" nocase
-	$String3 = "cmd.exe" nocase
-	$String4 = "powershell.exe" nocase
+	$String1 = "psexec.exe" nocase ascii wide 
+	$String2 = "psExec64.exe" nocase ascii wide 
+	$String3 = "cmd.exe" nocase ascii wide 
+	$String4 = "powershell.exe" nocase ascii wide 
     condition:
 	any of ($String*)
 }
 
 rule System_folder_enumeration{
     strings:
-	$string1 = "SystemDirectory" nocase
-	$string2 = "yrotceriDmetsyS" nocase // reverse
-	$string3 = "Systemroot" nocase
-	$string4 = "toormetsyS" nocase // reverse
-	$string5 = "Windir" nocase
-	$string6 = "ridniW" nocase // reverse
-	$string7 = "GetSystemWindowsDirectory" nocase
-	$string8 = "GetWindowsDirectory" nocase
-	$string9 = "GetSystemDirectory" nocase
+	$string1 = "SystemDirectory" nocase ascii wide 
+	$string2 = "yrotceriDmetsyS" nocase ascii wide  // reverse
+	$string3 = "Systemroot" nocase ascii wide 
+	$string4 = "toormetsyS" nocase ascii wide  // reverse
+	$string5 = "Windir" nocase ascii wide 
+	$string6 = "ridniW" nocase ascii wide  // reverse
+	$string7 = "GetSystemWindowsDirectory" nocase ascii wide 
+	$string8 = "GetWindowsDirectory" nocase ascii wide 
+	$string9 = "GetSystemDirectory" nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule String_obfuscation{
     strings:
-	$string1 = "StrReverse" nocase
+	$string1 = "StrReverse" nocase ascii wide 
 	$string2 = {22 20 26 20 22} 	// " & "
 	$string3 = {22 26 22}  	 	//  "&"
 	$string4 = {22 20 2B 20 22} 	// " + "
 	$string5 = {22 2B 22}  	 	//  "+"
-	$string6 = "decode" nocase
-	$string7 = "replace" nocase
-	$string8 = "unescape" nocase
+	$string6 = "decode" nocase ascii wide 
+	$string7 = "replace" nocase ascii wide 
+	$string8 = "unescape" nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule Registry_Commandline{
     strings:
-        $string1 = "Reg.exe" nocase
-        $string2 = "exe.geR" nocase // reverse
+        $string1 = "Reg.exe" nocase ascii wide 
+        $string2 = "exe.geR" nocase ascii wide  // reverse
     condition:
 	any of ($string*)
 }
 
 rule Accessing_Or_Creating_Services{
     strings:
-        $string1 = "OpenService" nocase
-        $string2 = "CreateService" nocase
+        $string1 = "OpenService" nocase ascii wide 
+        $string2 = "CreateService" nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule Deletes_Services{
     strings:
-	$string1 = "DeleteService" nocase
-	$string2 = "ecivreSeteleD" nocase
+	$string1 = "DeleteService" nocase ascii wide 
+	$string2 = "ecivreSeteleD" nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule Terminate_process{
     strings:
-        $string1 = "TerminateProcess" nocase
+        $string1 = "TerminateProcess" nocase ascii wide 
     condition:
 	$string1
 }
@@ -568,10 +579,10 @@ rule Reboot_Persistance{
     strings:
 	$String1 = "currentversion\\run" nocase ascii wide // Currentversion\Run, can be scripted (ascii) or compiled (Wide)
 	$String2 = "nur\\noisreVtnerruc" nocase ascii // Reversed
-	$String3 = "schtasks" nocase		// Schtasks.exe /Create
-	$String4 = "create" nocase
-	$String5 = "sksathcs" nocase		// Reversed
-	$String6 = "etaerc" nocase
+	$String3 = "schtasks" nocase ascii wide 		// Schtasks.exe /Create
+	$String4 = "create" nocase ascii wide 
+	$String5 = "sksathcs" nocase ascii wide 		// Reversed
+	$String6 = "etaerc" nocase ascii wide 
     condition:
 	($String1 or $String2) or
 	($String3 and $String4) or
@@ -580,42 +591,42 @@ rule Reboot_Persistance{
 
 rule LOLBins{
     strings:
-	$string1 = "wscript.exe" nocase
-	$string2 = "exe.tpircsw" nocase		// Reversed
-	$string3 = "cscript.exe" nocase
-	$string4 = "exe.tpircsc" nocase		// Reversed
-	$string5 = "bitsadmin.exe" nocase
-	$string6 = "exe.nimdastib" nocase	// Reversed
+	$string1 = "wscript.exe" nocase ascii wide 
+	$string2 = "exe.tpircsw" nocase ascii wide 		// Reversed
+	$string3 = "cscript.exe" nocase ascii wide 
+	$string4 = "exe.tpircsc" nocase ascii wide 		// Reversed
+	$string5 = "bitsadmin.exe" nocase ascii wide 
+	$string6 = "exe.nimdastib" nocase ascii wide 	// Reversed
 
 	// Already here:
-	// "installutil.exe" nocase
-	// "msbuild.exe" nocase
-	// "csc.exe" nocase
-	// "vbc.exe" nocase
-	// "ilasm.exe" nocase
-	// "jsc.exe" nocase
-	// "certutil.exe" nocase
+	// "installutil.exe" nocase ascii wide 
+	// "msbuild.exe" nocase ascii wide 
+	// "csc.exe" nocase ascii wide 
+	// "vbc.exe" nocase ascii wide 
+	// "ilasm.exe" nocase ascii wide 
+	// "jsc.exe" nocase ascii wide 
+	// "certutil.exe" nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule WMI_Query_Moniker_LDAP{
     strings:
-	$string1 = "winmgmts:" nocase
-	$string2 = ":stmgmniw" nocase
-	$string3 = "LDAP" nocase
-	$string4 = "PADL" nocase
+	$string1 = "winmgmts:" nocase ascii wide 
+	$string2 = ":stmgmniw" nocase ascii wide 
+	$string3 = "LDAP" nocase ascii wide 
+	$string4 = "PADL" nocase ascii wide 
     condition:
 	($string1 or $string2) and ($string3 or $string4)
 }
 
 rule Reflective_loader{
     strings:
-	$string1 = "EntryPoint.Invoke" nocase
-	$string2 = "System.Reflection" nocase
-	$string3 = "Reflection.Assembly" nocase
-	$string4 = "::Load" nocase
-	$string5 = ".Invoke" nocase
+	$string1 = "EntryPoint.Invoke" nocase ascii wide 
+	$string2 = "System.Reflection" nocase ascii wide 
+	$string3 = "Reflection.Assembly" nocase ascii wide 
+	$string4 = "::Load" nocase ascii wide 
+	$string5 = ".Invoke" nocase ascii wide 
     condition:
 	$string1 and ($string2 or $string3) or
 	($string3 and $string4 and $string5)
@@ -623,113 +634,113 @@ rule Reflective_loader{
 
 rule Starting_Code_From_Payload{
     strings:
-	$string1 = ".Invoke" nocase
-	$string2 = "System.Runtime" nocase
-	$string3 = "Runtime.InteropServices" nocase
+	$string1 = ".Invoke" nocase ascii wide 
+	$string2 = "System.Runtime" nocase ascii wide 
+	$string3 = "Runtime.InteropServices" nocase ascii wide 
     condition:
 	$string1 and ($string2 or $string3)
 }
 
 rule Requires_Admin_Privileges{
     strings:
-	$string1 = "<?xml" nocase
-	$string2 = "requestedPrivileges" nocase
-	$string3 = "requireAdministrator" nocase
+	$string1 = "<?xml" nocase ascii wide 
+	$string2 = "requestedPrivileges" nocase ascii wide 
+	$string3 = "requireAdministrator" nocase ascii wide 
     condition:
 	all of ($string*)
 }
 
 rule Access_Service_Control_Manager{
     strings:
-	$string1 = "OpenSCManagerA" nocase
+	$string1 = "OpenSCManagerA" nocase ascii wide 
     condition:
 	$string1
 }
 
 rule WMI_Enumerates_Antivirus{
     strings:
-	$string1 = "winmgmts:" nocase
-	$string2 = ":stmgmniw" nocase
-	$string3 = "securitycenter" nocase
-	$string4 = "retnecytiruces" nocase
-	$string5 = "AntiVirusProduct" nocase
-	$string6 = "tcudorPsuriVitnA" nocase
+	$string1 = "winmgmts:" nocase ascii wide 
+	$string2 = ":stmgmniw" nocase ascii wide 
+	$string3 = "securitycenter" nocase ascii wide 
+	$string4 = "retnecytiruces" nocase ascii wide 
+	$string5 = "AntiVirusProduct" nocase ascii wide 
+	$string6 = "tcudorPsuriVitnA" nocase ascii wide 
     condition:
 	($string1 or $string2) and ($string3 or $string4) and ($string5 or $string6)
 }
 
 rule WMI_Enumerates_Disk_properties{
     strings:
-	$string1 = "winmgmts:" nocase
-	$string2 = ":stmgmniw" nocase
-	$string3 = "win32_logicaldisk" nocase
-	$string4 = "ksidlacigol_23niw" nocase
+	$string1 = "winmgmts:" nocase ascii wide 
+	$string2 = ":stmgmniw" nocase ascii wide 
+	$string3 = "win32_logicaldisk" nocase ascii wide 
+	$string4 = "ksidlacigol_23niw" nocase ascii wide 
     condition:
 	($string1 or $string2) and ($string3 or $string4)
 }
 
 rule WMI_Enumerates_OperatingSystem{
     strings:
-	$string1 = "winmgmts:" nocase
-	$string2 = ":stmgmniw" nocase
-	$string3 = "Win32_OperatingSystem" nocase
-	$string4 = "metsySgnitarepO_23niW" nocase
+	$string1 = "winmgmts:" nocase ascii wide 
+	$string2 = ":stmgmniw" nocase ascii wide 
+	$string3 = "Win32_OperatingSystem" nocase ascii wide 
+	$string4 = "metsySgnitarepO_23niW" nocase ascii wide 
     condition:
 	($string1 or $string2) and ($string3 or $string4)
 }
 
 rule Enumerate_Processes{
     strings:
-	$string1 = "OpenProcess" nocase
-	$string2 = "CreateToolhelp32Snapshot" nocase
-	$string3 = "Process32First" nocase
-	$string4 = "Process32Next" nocase
+	$string1 = "OpenProcess" nocase ascii wide 
+	$string2 = "CreateToolhelp32Snapshot" nocase ascii wide 
+	$string3 = "Process32First" nocase ascii wide 
+	$string4 = "Process32Next" nocase ascii wide 
     condition:
 	all of ($string*)
 }
 
 rule Enumerate_Threads{
     strings:
-	$string1 = "OpenProcess" nocase
-	$string2 = "CreateToolhelp32Snapshot" nocase
-	$string3 = "Thread32First" nocase
-	$string4 = "Thread32Next" nocase
+	$string1 = "OpenProcess" nocase ascii wide 
+	$string2 = "CreateToolhelp32Snapshot" nocase ascii wide 
+	$string3 = "Thread32First" nocase ascii wide 
+	$string4 = "Thread32Next" nocase ascii wide 
     condition:
 	all of ($string*)
 }
 
 rule Suspends_running_Threads{
     strings:
-	$string1 = "SuspendThread" nocase
+	$string1 = "SuspendThread" nocase ascii wide 
     condition:
 	all of ($string*)
 }
 
 rule Resumes_suspended_Threads{
     strings:
-	$string1 = "ResumeThread" nocase
+	$string1 = "ResumeThread" nocase ascii wide 
     condition:
 	all of ($string*)
 }
 
 rule Enumerates_Active_Window{
     strings:
-	$string1 = "GetActiveWindow" nocase
-	$string2 = "GetForegroundWindow" nocase
+	$string1 = "GetActiveWindow" nocase ascii wide 
+	$string2 = "GetForegroundWindow" nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule Enumerates_Drive_Serial_Numbers{
     strings:
-	$string1 = "volumeserialnumber" nocase
+	$string1 = "volumeserialnumber" nocase ascii wide 
     condition:
 	$string1
 }
 
 rule Enumerates_Available_Drives{
     strings:
-	$string1 = "GetLogicalDrives" nocase
+	$string1 = "GetLogicalDrives" nocase ascii wide 
     condition:
 	$string1
 }
@@ -832,13 +843,13 @@ rule Enumerate_Programs_windows{
 
 rule Execute_Dynamic_Script_Code{
     strings:
-	$string1 = "eval " nocase 		//java
-	$string2 = "eval(" nocase
-	$string3 = "Invoke-Expression" nocase 	//powershell
-	$string4 = " iex" nocase 
-	$string5 = "iex " nocase 
-	$string6 = "iex(" nocase 
-	$string7 = "|iex" nocase 
+	$string1 = "eval " nocase ascii wide 		//java
+	$string2 = "eval(" nocase ascii wide
+	$string3 = "Invoke-Expression"  ascii wide 	//powershell
+	$string4 = " iex" nocase ascii wide
+	$string5 = "iex " nocase ascii wide 
+	$string6 = "iex(" nocase ascii wide
+	$string7 = "|iex" nocase ascii wide
 
     condition:
 	any of ($string*)
@@ -846,26 +857,26 @@ rule Execute_Dynamic_Script_Code{
 
 rule Console_application{
     strings:
-	$string1 = "GetCommandLine" nocase
+	$string1 = "GetCommandLine" nocase ascii wide 
     condition:
 	$string1
 }
 
 rule Retrieves_environment_strings{
     strings:
-	$string1 = "GetEnvironmentStrings" nocase
-	$string2 = "environ(" nocase
-	$string3 = "environ " nocase
+	$string1 = "GetEnvironmentStrings" nocase ascii wide 
+	$string2 = "environ(" nocase ascii wide 
+	$string3 = "environ " nocase ascii wide 
     condition:
 	any of ($string*)
 }
 
 rule VisualBasic6_Runtime{
     strings:
-	$string1 = "MSVBVM60.DLL" nocase
-	$string2 = "VB6.OLB" nocase
-	$string3 = "VBA6.DLL" nocase
-	$string4 = "__vba" nocase
+	$string1 = "MSVBVM60.DLL" nocase ascii wide 
+	$string2 = "VB6.OLB" nocase ascii wide 
+	$string3 = "VBA6.DLL" nocase ascii wide 
+	$string4 = "__vba" nocase ascii wide 
 	$string5 = ".vbp"
     condition:
 	2 of ($string*)
@@ -873,35 +884,35 @@ rule VisualBasic6_Runtime{
 
 rule Unpack_GZipStream{
     strings:
-        $string1 = "GZipStream" nocase 
-	$string2 = "decompress" nocase 
-	$string3 = "deflate" nocase 
+        $string1 = "GZipStream" nocase ascii wide  
+	$string2 = "decompress" nocase ascii wide  
+	$string3 = "deflate" nocase ascii wide  
     condition:
 	$string1 and ($string2 or $string3)
 }
 
 rule HTTP_POST_Information{
     strings:
-        $string1 = "HttpMethod(" nocase 
-	$string2 = "HttpMethod " nocase 
-	$string3 = "POST" nocase 
+        $string1 = "HttpMethod(" nocase ascii wide  
+	$string2 = "HttpMethod " nocase ascii wide  
+	$string3 = "POST" nocase ascii wide  
     condition:
 	($string1 or $string2) and $string3
 }
 
 rule Delete_VolumeShadowCopy{
     strings:
-        $string1 = "vssadmin" nocase
-	$string2 = "delete shadow" nocase
+        $string1 = "vssadmin" nocase ascii wide 
+	$string2 = "delete shadow" nocase ascii wide 
     condition:
 	$string1 and $string2
 }
 
 rule SessionCookie{
     strings:
-        $string1 = "Headers" nocase
-        $string2 = "Cookie" nocase
-        $string3 = "session" nocase
+        $string1 = "Headers" nocase ascii wide 
+        $string2 = "Cookie" nocase ascii wide 
+        $string3 = "session" nocase ascii wide 
     condition:
 	2 of ($string*)
 }
@@ -910,7 +921,7 @@ rule IP_Address{
     strings:
         $rxip = /[0-9a-zA-Z]{1,3}\.[0-9a-zA-Z]{1,3}\.[0-9a-zA-Z]{1,3}\.[0-9a-zA-Z]{1,3}/
     condition:
-        $rxip
+        $rxip // Version strings can trigger FPs.
 }
 
 rule Modify_Shell_Startup{
@@ -929,11 +940,10 @@ rule Access_Powershell_Library{
 
 rule AMSI_Bypass{
     strings:
-        $string1 = "Management.Automation.PSTypeName" nocase
-        $string2 = "emaNepyTSP.noitamotuA.tnemeganaM" nocase //Rev
-        $string3 = "Bypass.AMSI" nocase
-        $string4 = "ISMA.ssapyB" nocase //Rev
+        $string1 = "Management.Automation.PSTypeName" nocase ascii wide 
+        $string2 = "emaNepyTSP.noitamotuA.tnemeganaM" nocase ascii wide  //Rev
+        $string3 = "Bypass.AMSI" nocase ascii wide 
+        $string4 = "ISMA.ssapyB" nocase ascii wide  //Rev
     condition:
         all of ($string*)
 }
-
