@@ -1,4 +1,4 @@
-// Last update: 23:26 2020-02-06
+// Last update: 10:39 2020-02-08
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -305,6 +305,7 @@ rule Generic_Recon_Indicator{
         $string1 = "GetOEMCP" nocase
         $string2 = "GetTimeZoneInformation" nocase
         $string3 = "EnumSystemLocales" nocase
+        $string4 = "systeminfo" nocase
     condition:
 	any of ($string*)
 }
@@ -320,7 +321,7 @@ rule Registry_Query_Infomation{
 	$api1 = "GetValueFromRegistry" nocase
 	$api2 = "ZwQueryValueKey"
     condition:
-	$open and any of ($string*) or all of ($dotnetstring*) or any of ($api*)
+	($open and any of ($string*)) or all of ($dotnetstring*) or any of ($api*)
 }
 
 rule Registry_Write_Infomation{
@@ -333,7 +334,7 @@ rule Registry_Write_Infomation{
 	$dotnetstring2 = "SetValue" nocase
 	$api1 = "ZwSetValueKey"
     condition:
-	$open and any of ($string*) or all of ($dotnetstring*) or $api1
+	($open and any of ($string*)) or all of ($dotnetstring*) or $api1
 }
 
 rule Registry_Delete_Infomation{
@@ -865,6 +866,7 @@ rule VisualBasic6_Runtime{
 	$string2 = "VB6.OLB" nocase
 	$string3 = "VBA6.DLL" nocase
 	$string4 = "__vba" nocase
+	$string5 = ".vbp"
     condition:
 	2 of ($string*)
 }
@@ -899,8 +901,39 @@ rule SessionCookie{
     strings:
         $string1 = "Headers" nocase
         $string2 = "Cookie" nocase
-        $string3 = "session=" nocase
+        $string3 = "session" nocase
     condition:
-	all of ($string*)
+	2 of ($string*)
+}
+
+rule IP_Address{
+    strings:
+        $rxip = /[0-9a-zA-Z]{1,3}\.[0-9a-zA-Z]{1,3}\.[0-9a-zA-Z]{1,3}\.[0-9a-zA-Z]{1,3}/
+    condition:
+        $rxip
+}
+
+rule Modify_Shell_Startup{
+    strings:
+        $reg1 = "shell\\open\\command" nocase ascii wide
+    condition:
+        $reg1
+}
+
+rule Access_Powershell_Library{
+    strings:
+        $string1 = "System.Management.Automation.dll" nocase ascii wide
+    condition:
+        $string1
+}
+
+rule AMSI_Bypass{
+    strings:
+        $string1 = "Management.Automation.PSTypeName" nocase
+        $string2 = "emaNepyTSP.noitamotuA.tnemeganaM" nocase //Rev
+        $string3 = "Bypass.AMSI" nocase
+        $string4 = "ISMA.ssapyB" nocase //Rev
+    condition:
+        all of ($string*)
 }
 
