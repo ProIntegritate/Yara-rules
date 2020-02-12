@@ -1,4 +1,4 @@
-// Last update: 18:06 2020-02-08
+// Last update: 11:00 2020-02-10
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -627,9 +627,12 @@ rule Reflective_loader{
 	$string3 = "Reflection.Assembly" nocase ascii wide 
 	$string4 = "::Load" nocase ascii wide 
 	$string5 = ".Invoke" nocase ascii wide 
+	$string6 = "Runtime.InteropServices.Marshal"
+	$string7 = "::CreateThread"
     condition:
 	$string1 and ($string2 or $string3) or
-	($string3 and $string4 and $string5)
+	($string3 and $string4 and $string5) or
+	($string6 and $string7)
 }
 
 rule Starting_Code_From_Payload{
@@ -867,6 +870,7 @@ rule Retrieves_environment_strings{
 	$string1 = "GetEnvironmentStrings" nocase ascii wide 
 	$string2 = "environ(" nocase ascii wide 
 	$string3 = "environ " nocase ascii wide 
+	$string4 = "$env:" nocase ascii wide 
     condition:
 	any of ($string*)
 }
@@ -947,3 +951,19 @@ rule AMSI_Bypass{
     condition:
         all of ($string*)
 }
+
+rule DLLImport{
+    strings:
+        $string1 = "DllImport" nocase ascii wide 
+        $string2 = ".dll" nocase ascii wide 
+    condition:
+        all of ($string*)
+}
+
+rule ByteArray{
+    strings:
+        $string1 = "Byte[]" nocase ascii wide 
+    condition:
+        all of ($string*)
+}
+
