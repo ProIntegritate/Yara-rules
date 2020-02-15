@@ -1,4 +1,4 @@
-// 2020-01-13 - File ID Yara rules. 
+// FileID.Yara, last updated: 00:32 2020-02-16
 
 import "hash"
 import "pe"
@@ -7,7 +7,8 @@ rule Windows_Executable{
     strings:
         $upx = "UPX!" nocase
     condition:
-	uint16(0x00) == 0x5a4d and
+	(uint16(0x00) == 0x5a4d or
+	uint16(0x0050) == 0x5a4d) and
 	not $upx
 }
 
@@ -115,7 +116,7 @@ rule Chrome_Base64{
 rule MS_Office_Document_Legacy{
     condition:
 	uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
-	uint16(0x19) == 0x0320
+	(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300)
 }
 
 rule MS_MSI_package{
