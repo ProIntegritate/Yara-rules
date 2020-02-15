@@ -1,4 +1,4 @@
-// Last update: 00:31 2020-02-16
+// Last update: 00:47 2020-02-16
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -996,3 +996,10 @@ rule Word_Embedded_Object{
 	$string1
 }
 
+rule Base64_Payload{
+    strings:
+        $rxbs1 = /[0-9a-zA-Z+\/]{12}\=/
+        $rxbs2 = /[0-9a-zA-Z+\/]{12}\=\=/
+    condition:
+        any of ($rxbs*) // I know, rather lame, but better than nothing.
+}
