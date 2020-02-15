@@ -1,4 +1,4 @@
-// Last update: 11:00 2020-02-10
+// Last update: 14:38 2020-02-15
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -113,8 +113,11 @@ rule Decoding_Base64_Payload{
 	$string3 = "MSXML2.DOMDocument" nocase ascii wide
 	$string4 = "B64DECODE" nocase ascii wide
 	$string5 = "Base64ToString" nocase ascii wide
+	$string6 = "base64_decode" nocase ascii wide
     condition:
-	($string1 and $string2) or ($string3 and $string4) or $string5
+	($string1 and $string2) or
+	($string3 and $string4) or
+	$string5 or $string6
 }
 
 rule URL{
@@ -967,3 +970,10 @@ rule ByteArray{
         all of ($string*)
 }
 
+rule Use_of_Credentials{
+    strings:
+        $string1 = "Password =" nocase ascii wide 
+        $string2 = "Password=" nocase ascii wide 
+    condition:
+        any of ($string*)
+}
