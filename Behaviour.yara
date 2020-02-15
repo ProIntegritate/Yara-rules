@@ -1,4 +1,4 @@
-// Last update: 14:38 2020-02-15
+// Last update: 00:31 2020-02-16
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -70,7 +70,7 @@ rule INFO_Build_System_path{
 rule INFO_MS_Office_Document_Legacy{
     condition:
 	uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
-	uint16(0x19) == 0x0320
+	(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300)
 }
 
 
@@ -977,3 +977,22 @@ rule Use_of_Credentials{
     condition:
         any of ($string*)
 }
+
+rule Word_Scripting_Document_open{
+    strings:
+        $string1 = "Document_open" nocase ascii wide 
+    condition:
+	uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
+	(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300) and
+	$string1
+}
+
+rule Word_Embedded_Object{
+    strings:
+        $string1 = "Embedded Object" nocase ascii wide 
+    condition:
+	uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
+	(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300) and
+	$string1
+}
+
