@@ -1,4 +1,4 @@
-// Last updated: 21:10 2020-02-13
+// Last updated: 14:23 2020-02-15
 
 rule PHP_Webshell{
         meta:
@@ -8,15 +8,19 @@ rule PHP_Webshell{
 
         strings:
                 $generic1 = "?php" nocase
-                $generic2 = "eval" nocase
 
-                $phpwebshell1 = "shell_exec" nocase
-                $phpwebshell2 = "exec" nocase
-                $phpwebshell3 = "system" nocase
-                $phpwebshell4 = "passthru" nocase
+                $phpwebshell1 = "shell_exec" nocase ascii wide
+                $phpwebshell2 = "exec" nocase ascii wide
+                $phpwebshell3 = "system" nocase ascii wide
+                $phpwebshell4 = "passthru" nocase ascii wide
+                $phpwebshell5 = "popen" nocase ascii wide
+                $phpwebshell6 = "proc_open" nocase ascii wide
+
+		$form1 = "<form" nocase ascii wide
+		$form2 = "<input" nocase ascii wide
 
         condition:
-                ($generic1 and $generic2) and 2 of ($phpwebshell*)
+                $generic1 and 2 of ($phpwebshell*) and all of ($form*)
 }
 
 rule ASP_Webshell{
