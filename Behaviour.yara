@@ -1,4 +1,4 @@
-// Last update: 00:47 2020-02-16
+// Last update: 01:07 2020-02-16
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -56,8 +56,9 @@ rule INFO_RichHeader{
 rule INFO_PDB_Path{
     strings:
         $string1 = ".pdb" nocase nocase ascii wide
+	$string2 = ":\\" ascii wide
     condition:
-	any of ($string*)
+	all of ($string*)
 }
 
 rule INFO_Build_System_path{
@@ -451,9 +452,10 @@ rule Powershell_Execution_Bypass{
 rule Powershell_EncodedCommand_Usage{
     strings:
 	$String1 = "powershell" nocase ascii wide 
-	$String2 = "-EncodedCommand" nocase ascii wide 
+	$String2 = " -EncodedCommand " nocase ascii wide 
+	$String3 = " -e " nocase ascii wide 
     condition:
-	($String1 and $String2)
+	$String1 and ($String2 or $String3)
 }
 
 rule Powershell_Registry_Key_Access{
@@ -911,8 +913,10 @@ rule Delete_VolumeShadowCopy{
     strings:
         $string1 = "vssadmin" nocase ascii wide 
 	$string2 = "delete shadow" nocase ascii wide 
+        $string3 = "nimdassv" nocase ascii wide 
+	$string4 = "wodahs eteled" nocase ascii wide 
     condition:
-	$string1 and $string2
+	($string1 and $string2) or ($string3 and $string4)
 }
 
 rule SessionCookie{
@@ -1000,6 +1004,9 @@ rule Base64_Payload{
     strings:
         $rxbs1 = /[0-9a-zA-Z+\/]{12}\=/
         $rxbs2 = /[0-9a-zA-Z+\/]{12}\=\=/
+        $rxbs3 = /\=[0-9a-zA-Z+\/]{12}/		// reversed
+        $rxbs4 = /\=\=[0-9a-zA-Z+\/]{12}/	// reversed
     condition:
-        any of ($rxbs*) // I know, rather lame, but better than nothing.
+        any of ($rxbs*) 
 }
+
