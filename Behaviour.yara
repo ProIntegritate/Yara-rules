@@ -1,4 +1,4 @@
-// Last update: 01:07 2020-02-16
+// Last update: 23:11 2020-02-17
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -225,8 +225,10 @@ rule Legacy_WebQuery{
     strings:
 	$string1 = "winhttp.dll" nocase ascii wide
 	$string2 = "WinHttpOpen" nocase ascii wide
+	$string3 = "createobject" nocase ascii wide
+	$string4 = "msxml2.xmlhttp" nocase ascii wide
     condition:
-	$string1 and $string2
+	($string1 and $string2) or ($string3 and $string4)
 }
 
 rule DotNet_DNS{
@@ -637,7 +639,8 @@ rule Reflective_loader{
     condition:
 	$string1 and ($string2 or $string3) or
 	($string3 and $string4 and $string5) or
-	($string6 and $string7)
+	$string6 and ($string7 or $string5)
+
 }
 
 rule Starting_Code_From_Payload{
@@ -1010,3 +1013,9 @@ rule Base64_Payload{
         any of ($rxbs*) 
 }
 
+rule External_IP_Lookup{
+    strings:
+        $ipext1 = "ipinfo.io" nocase ascii wide 
+    condition:
+        any of ($ipext*)
+}
