@@ -1,4 +1,4 @@
-// Last update: 23:11 2020-02-17
+// Last update: 23:17 2020-02-17
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -1015,7 +1015,13 @@ rule Base64_Payload{
 
 rule External_IP_Lookup{
     strings:
-        $ipext1 = "ipinfo.io" nocase ascii wide 
+        $ipext1 = "api.ip.sb" nocase ascii wide 
+        $ipext2 = "api.ipify.org" nocase ascii wide 
+        $ipext3 = "checkip.amazonaws.com" nocase ascii wide 
+        $ipext4 = "icanhazip.com" nocase ascii wide 
+        $ipext5 = "ident.me" nocase ascii wide 
+        $ipext6 = "ip1.dynupdate.no-ip.com" nocase ascii wide 
+        $ipext7 = "xip.aws.noip.net" nocase ascii wide 
     condition:
         any of ($ipext*)
 }
