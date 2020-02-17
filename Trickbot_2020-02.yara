@@ -1,4 +1,4 @@
-// Last updated: 10:55 2020-02-16
+// Last updated: 21:46 2020-02-17
 
 import "hash"
 import "pe"
@@ -30,6 +30,7 @@ rule Trickbot_RichHash{
 	 hash.md5(pe.rich_signature.clear_data) == "e3b235722e8bc47ff44aae8c422f84b1" or
 	 hash.md5(pe.rich_signature.clear_data) == "e56c38c168569277016ef992331baf7e" or
 	 hash.md5(pe.rich_signature.clear_data) == "f029f4f124951add69ecea9e0334698f" or
-	 hash.md5(pe.rich_signature.clear_data) == "feb87b5702fc9faa302a94fd88f3a733")
+	 hash.md5(pe.rich_signature.clear_data) == "feb87b5702fc9faa302a94fd88f3a733" or
+	 hash.md5(pe.rich_signature.clear_data) == "e17567aee7121ccae7486292dbde0ac4")
 
 }
