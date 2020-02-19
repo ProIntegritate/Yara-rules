@@ -1,4 +1,4 @@
-// Last updated: 20:49 2020-02-19
+// Last updated: 21:39 2020-02-19
 
 rule PHP_Webshell{
         meta:
@@ -21,6 +21,19 @@ rule PHP_Webshell{
 
         condition:
                 $generic1 and 2 of ($phpwebshell*) and all of ($form*)
+}
+
+rule PHP_Obfuscator{
+        meta:
+                description = "PHP Obfuscator, used sometimes by PHP webshells"
+                author = "@Pro_Integritate"
+                maltype = "Webshell/Encoder"
+        strings:
+		$php1 = "<?php"
+		$php2 = "Obfuscator"
+		$php3 = "www.fopo.com.ar"
+        condition:
+		3 of ($php*)
 }
 
 rule ASP_Webshell{
@@ -50,6 +63,7 @@ rule ASP_Webshell{
 		$generic4 = "POST" nocase ascii wide
 		$generic5 = "<input" nocase ascii wide
 		$generic6 = "StdOut" nocase ascii wide
+		//TODO: $generic7 = "Request.QueryString" nocase ascii wide
 
         condition:
 		not $php and
@@ -71,10 +85,11 @@ rule JSP_Webshell{
                 $java1 = "jsp" nocase ascii wide
                 $java2 = "java" nocase ascii wide
 
-		$exclude1 = "javascript" nocase ascii wide
+		$javascript = "javascript" nocase ascii wide
 
-		$htmlform1 = "<FORM" nocase ascii wide
-		$htmlform2 = "<INPUT" nocase ascii wide
+		$io1 = "<FORM" nocase ascii wide
+		$io2 = "<INPUT" nocase ascii wide
+		$io3 = "Encoding" nocase ascii wide
 
 		$exec1 = "Process" nocase ascii wide
 		$exec2 = "command" nocase ascii wide
@@ -83,7 +98,7 @@ rule JSP_Webshell{
 		$console1 = "Stream" nocase ascii wide
 
         condition:
-		( any of ($java*) and not $exclude1 ) and
-		all of ($htmlform*) and
+		( any of ($java*) and not $javascript ) and
+		( ($io1 and $io2) or ($io3) ) and
 		any of ($exec*) and $console1
 }
