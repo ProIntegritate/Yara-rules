@@ -1,4 +1,9 @@
-// Last updated: 21:39 2020-02-19
+// Last updated: 13:03 2020-02-23
+//
+// Detects:
+// 	4 families of ASP webshells
+// 	3 families of JSP webshells
+// 	5 families of PHP webshells + Obfuscator + Compressed
 
 rule PHP_Webshell{
         meta:
@@ -29,11 +34,29 @@ rule PHP_Obfuscator{
                 author = "@Pro_Integritate"
                 maltype = "Webshell/Encoder"
         strings:
-		$php1 = "<?php"
-		$php2 = "Obfuscator"
-		$php3 = "www.fopo.com.ar"
+		$php1 = "<?php" nocase ascii wide
+		$php2 = "Obfuscator" nocase ascii wide
+		$php3 = "www.fopo.com.ar" nocase ascii wide
         condition:
 		3 of ($php*)
+}
+
+rule PHP_Compressed_Payload{
+        meta:
+                description = "Compressed PHP payload"
+                author = "@Pro_Integritate"
+                maltype = "Webshell/Encoder"
+        strings:
+		$php = "<?php"
+		$decomp1 = "UncompressFile"
+		$decomp2 = "gzuncompress"
+		$decomp3 = "gzopen"
+		$decomp4 = "gzdecode"
+
+		$decode = "base64" // "base64_decode"
+		$eval = "eval"
+        condition:
+		$php and any of ($decomp*) and $decode and $eval
 }
 
 rule ASP_Webshell{
@@ -44,7 +67,7 @@ rule ASP_Webshell{
                 maltype = "Webshell"
 
 	strings:
-		$php = "<?php"
+		$php = "<?php" nocase ascii wide
 
 		$asp1 = "<%@ import" nocase ascii wide
 		$asp2 = "<asp:" nocase ascii wide
@@ -82,6 +105,8 @@ rule JSP_Webshell{
                 maltype = "Webshell"
 
         strings:
+		$php = "<?php" nocase ascii wide
+
                 $java1 = "jsp" nocase ascii wide
                 $java2 = "java" nocase ascii wide
 
@@ -98,6 +123,7 @@ rule JSP_Webshell{
 		$console1 = "Stream" nocase ascii wide
 
         condition:
+		not $php and
 		( any of ($java*) and not $javascript ) and
 		( ($io1 and $io2) or ($io3) ) and
 		any of ($exec*) and $console1
