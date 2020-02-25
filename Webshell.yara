@@ -1,9 +1,9 @@
-// Last updated: 13:03 2020-02-23
+// Last updated: 00:52 2020-02-26
 //
 // Detects:
-// 	4 families of ASP webshells
-// 	3 families of JSP webshells
-// 	5 families of PHP webshells + Obfuscator + Compressed
+// 	113 families of PHP webshells + Obfuscator + Compressed
+// 	 51 families of ASP webshells
+// 	 13 families of JSP webshells
 
 rule PHP_Webshell{
         meta:
