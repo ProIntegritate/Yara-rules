@@ -1,4 +1,4 @@
-// Last update: 23:17 2020-02-17
+// Last update: 09:27 2020-02-26
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -547,6 +547,10 @@ rule String_obfuscation{
 	$string6 = "decode" nocase ascii wide 
 	$string7 = "replace" nocase ascii wide 
 	$string8 = "unescape" nocase ascii wide 
+	$string8 = "[alias((" nocase ascii wide 
+	$string8 = "[alias ((" nocase ascii wide 
+	$string8 = "$FuncVars[(" nocase ascii wide 
+	$string8 = "$FuncVars [(" nocase ascii wide 
     condition:
 	any of ($string*)
 }
