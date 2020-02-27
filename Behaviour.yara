@@ -1,4 +1,4 @@
-// Last update: 13:38 2020-02-26
+// Last update: 19:37 2020-02-27
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -1028,4 +1028,17 @@ rule External_IP_Lookup{
         $ipext7 = "xip.aws.noip.net" nocase ascii wide 
     condition:
         any of ($ipext*)
+}
+
+rule VM_Detection{
+    strings:
+        $vm1 = "Win32_Processor" nocase ascii wide
+        $vm2 = ".NumberOfCores" nocase ascii wide
+        $vm3 = "Win32_ComputerSystem" nocase ascii wide
+        $vm4 = ".TotalPhysicalMemory" nocase ascii wide
+        $vm5 = "Win32_LogicalDisk" nocase ascii wide
+        $vm6 = ".Size" nocase ascii wide
+	$vm7 = "isProcessorFeaturePresent" nocase ascii wide
+     condition:
+        ($vm1 and $vm2) or ($vm3 and $vm4) or ($vm5 and $vm6) or $vm7
 }
