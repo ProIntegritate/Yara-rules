@@ -1,11 +1,11 @@
-// Last update: 19:37 2020-02-27
+// Last update: 13:45 2020-03-01
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
 //
-// Disclaimer: This is just a triage script and does not tell
-// you with 100% certainty that something is going on.
-// Everything need to be validated - and that is your job.
+// Disclaimer: This is just a triage script and does not tell you with
+// certainty that something is good or bad - it's not reverse engineering.
+// Everything you see need to be validated - and that is your job.
 
 rule INFO_Windows_Executable{
     strings:
@@ -1042,3 +1042,19 @@ rule VM_Detection{
      condition:
         ($vm1 and $vm2) or ($vm3 and $vm4) or ($vm5 and $vm6) or $vm7
 }
+
+rule lolbin_bitsadmin_download{
+    strings:
+        $badl = "bitsadmin" nocase ascii wide
+	$bad2 = "/download " nocase ascii wide
+     condition:
+        all of ($bad*)
+}
+
+rule creates_ActiveXObject{
+    strings:
+        $aao = "new ActiveXObject" nocase ascii wide
+     condition:
+        $aao
+}
+
