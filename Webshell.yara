@@ -1,4 +1,4 @@
-// Last updated: 00:52 2020-02-26
+// Last updated: 17:48 2020-03-02
 //
 // Detects:
 // 	113 families of PHP webshells + Obfuscator + Compressed
@@ -25,6 +25,7 @@ rule PHP_Webshell{
 		$form2 = "<input" nocase ascii wide
 
         condition:
+		not (uint16(0x00) == 0x5a4d) and
                 $generic1 and 2 of ($phpwebshell*) and all of ($form*)
 }
 
@@ -38,6 +39,7 @@ rule PHP_Obfuscator{
 		$php2 = "Obfuscator" nocase ascii wide
 		$php3 = "www.fopo.com.ar" nocase ascii wide
         condition:
+		not (uint16(0x00) == 0x5a4d) and
 		3 of ($php*)
 }
 
@@ -56,6 +58,7 @@ rule PHP_Compressed_Payload{
 		$decode = "base64" // "base64_decode"
 		$eval = "eval"
         condition:
+		not (uint16(0x00) == 0x5a4d) and
 		$php and any of ($decomp*) and $decode and $eval
 }
 
@@ -89,6 +92,7 @@ rule ASP_Webshell{
 		//TODO: $generic7 = "Request.QueryString" nocase ascii wide
 
         condition:
+		not (uint16(0x00) == 0x5a4d) and
 		not $php and
                 any of ($asp*) and
 		any of ($exec*) and
@@ -123,6 +127,7 @@ rule JSP_Webshell{
 		$console1 = "Stream" nocase ascii wide
 
         condition:
+		not (uint16(0x00) == 0x5a4d) and
 		not $php and
 		( any of ($java*) and not $javascript ) and
 		( ($io1 and $io2) or ($io3) ) and
