@@ -1,9 +1,10 @@
-// Last updated: 17:48 2020-03-02
+// Last updated: 21:42 2020-03-03
 //
 // Detects:
 // 	113 families of PHP webshells + Obfuscator + Compressed
 // 	 51 families of ASP webshells
 // 	 13 families of JSP webshells
+//	  5 families of CFM webshells + Encoded pages
 
 rule PHP_Webshell{
         meta:
@@ -12,7 +13,7 @@ rule PHP_Webshell{
                 maltype = "Webshell"
 
         strings:
-                $generic1 = "?php" nocase
+                $generic1 = "?php" nocase ascii wide
 
                 $phpwebshell1 = "shell_exec" nocase ascii wide
                 $phpwebshell2 = "exec" nocase ascii wide
@@ -132,4 +133,56 @@ rule JSP_Webshell{
 		( any of ($java*) and not $javascript ) and
 		( ($io1 and $io2) or ($io3) ) and
 		any of ($exec*) and $console1
+}
+
+rule CFM_Encoded_file{
+        meta:
+                description = "Cold Fusion Encoded signature"
+                author = "@Pro_Integritate"
+                maltype = "Encoded Colf Fusion page"
+
+        strings:
+                $php = "?php" nocase ascii wide
+
+		$sign = "Allaire Cold Fusion Template"
+
+        condition:
+		not (uint16(0x00) == 0x5a4d) and
+		not $php and
+		$sign
+}
+
+rule CFM_Webshell{
+        meta:
+                description = "Cold Fusion Encoded signature"
+                author = "@Pro_Integritate"
+                maltype = "Encoded Colf Fusion page"
+
+        strings:
+                $php = "?php" nocase ascii wide
+
+		$header1 = "<html" nocase ascii wide
+		$header2 = "<cfparam" nocase ascii wide
+
+		$input1 = "<form" nocase ascii wide
+		$input2 = "post" nocase ascii wide
+
+		$cfcommand1 = "<cffile"
+		$cfcommand2 = "<cfexecute"
+		$cfcommand3 = "<cfdirectory"
+		$cfcommand4 = "<cfscript"
+
+		$cfcommand5 = "coldfusion.server.ServiceFactory"
+		$cfcommand6 = "getDatasourceService"
+		$cfcommand7 = ".getDatasources"
+
+		$output = "<cfoutput"
+        condition:
+		not (uint16(0x00) == 0x5a4d) and
+		not $php and
+		($header1 or $header2) and
+		all of ($input*) and
+		($cfcommand1 or $cfcommand2 or $cfcommand3 or $cfcommand4 or
+		($cfcommand5 and $cfcommand6 and $cfcommand7)) and
+		$output
 }
