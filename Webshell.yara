@@ -1,4 +1,4 @@
-// Last updated: 21:42 2020-03-03
+// Last updated: 21:44 2020-03-03
 //
 // Detects:
 // 	113 families of PHP webshells + Obfuscator + Compressed
@@ -154,9 +154,9 @@ rule CFM_Encoded_file{
 
 rule CFM_Webshell{
         meta:
-                description = "Cold Fusion Encoded signature"
+                description = "Generic CFM Webshell signature"
                 author = "@Pro_Integritate"
-                maltype = "Encoded Colf Fusion page"
+                maltype = "Webshell"
 
         strings:
                 $php = "?php" nocase ascii wide
