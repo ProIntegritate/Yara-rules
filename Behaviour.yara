@@ -1,4 +1,4 @@
-// Last update: 13:45 2020-03-01
+// Last update: 00:53 2020-03-05
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -483,6 +483,7 @@ rule Checks_For_Debugger{
 	$String1 = "IsDebuggerPresent" nocase ascii wide  // Sub process
 	$String2 = "CheckRemoteDebuggerPresent" nocase ascii wide  // Paralell process
 	$String3 = "KdDebuggerEnabled" nocase ascii wide  // Kernel call
+	$String4 = "NtQueryInformationProcess" nocase ascii wide  // Ring3 debugger (ProcessDebugPort)
     condition:
 	any of ($String*)
 }
