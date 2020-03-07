@@ -1,4 +1,4 @@
-// Last update: 00:53 2020-03-05
+// Last update: 22:31 2020-03-07
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -888,7 +888,7 @@ rule Retrieves_environment_strings{
 	any of ($string*)
 }
 
-rule VisualBasic6_Runtime{
+rule INFO_VisualBasic6_Runtime{
     strings:
 	$string1 = "MSVBVM60.DLL" nocase ascii wide 
 	$string2 = "VB6.OLB" nocase ascii wide 
@@ -1057,5 +1057,30 @@ rule creates_ActiveXObject{
         $aao = "new ActiveXObject" nocase ascii wide
      condition:
         $aao
+}
+
+rule INFO_GCC_Runtime{
+    strings:
+	$string1 = "GCC:" nocase ascii wide 
+	$string2 = "GNU C" nocase ascii wide 
+
+    condition:
+	any of ($string*)
+}
+
+rule Socket_Listener{
+    strings:
+	$string1 = "websocket" nocase ascii wide	// Java
+	$string2 = ".server" nocase ascii wide 
+	$string3 = ".createServer" nocase ascii wide 
+	$string4 = ".listen" nocase ascii wide 
+
+	$string5 = "net.sockets" nocase ascii wide 	// Dotnet
+	$string6 = "tcplistener" nocase ascii wide 
+	$string7 = ".start" nocase ascii wide 
+
+    condition:
+	($string1 and $string2 and $string3 and $string4) or 
+	($string5 and $string6 and $string7)
 }
 
