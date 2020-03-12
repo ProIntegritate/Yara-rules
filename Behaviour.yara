@@ -1,4 +1,4 @@
-// Last update: 22:31 2020-03-07
+// Last update: 02:22 2020-03-12
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -1082,5 +1082,25 @@ rule Socket_Listener{
     condition:
 	($string1 and $string2 and $string3 and $string4) or 
 	($string5 and $string6 and $string7)
+}
+
+rule Tunneling{
+    strings:
+	$string1 = "ngrok.io" nocase
+	$string2 = "portmap.io" nocase
+	$string3 = "beameio.net" nocase
+	$string4 = "tmate.io" nocase
+	$string5 = "pktriot.net" nocase
+	$string6 = "loclx.io" nocase
+    condition:
+	any of ($string*)
+}
+
+rule Hex_Payload{
+    strings:
+        $hexpayload1 = /0x[0-9a-fA-F]{1,2}\,0x[0-9a-fA-F]{1,2}\,0x[0-9a-fA-F]{1,2}/
+        $hexpayload2 = /[0-9a-fA-F]{1,2}\,[0-9a-fA-F]{1,2}\,[0-9a-fA-F]{1,2}/
+    condition:
+        any of ($hexpayload*) 
 }
 
