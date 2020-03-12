@@ -1,4 +1,4 @@
-// Last update: 02:22 2020-03-12
+// Last update: 02:43 2020-03-12
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -92,8 +92,6 @@ rule Network_Access{
 	any of ($net*)
 }
 
-
-
 rule Shell_External_Commands{
     strings:
 	$string1 = "shell32.dll" nocase ascii wide
@@ -115,10 +113,12 @@ rule Decoding_Base64_Payload{
 	$string4 = "B64DECODE" nocase ascii wide
 	$string5 = "Base64ToString" nocase ascii wide
 	$string6 = "base64_decode" nocase ascii wide
+	$string7 = "B64D" nocase ascii wide
+	$string8 = "base64ToStream" nocase ascii wide
     condition:
 	($string1 and $string2) or
 	($string3 and $string4) or
-	$string5 or $string6
+	$string5 or $string6 or $string7 or $string8
 }
 
 rule URL{
@@ -150,7 +150,6 @@ rule Sets_specific_HTTP_Useragent{
     condition:
 	all of ($string*)
 }
-
 
 rule Payload_Download{
     strings:
@@ -608,7 +607,7 @@ rule LOLBins{
 	$string3 = "cscript.exe" nocase ascii wide 
 	$string4 = "exe.tpircsc" nocase ascii wide 		// Reversed
 	$string5 = "bitsadmin.exe" nocase ascii wide 
-	$string6 = "exe.nimdastib" nocase ascii wide 	// Reversed
+	$string6 = "exe.nimdastib" nocase ascii wide 		// Reversed
 
 	// Already here:
 	// "installutil.exe" nocase ascii wide 
@@ -645,7 +644,6 @@ rule Reflective_loader{
 	$string1 and ($string2 or $string3) or
 	($string3 and $string4 and $string5) or
 	$string6 and ($string7 or $string5)
-
 }
 
 rule Starting_Code_From_Payload{
@@ -818,7 +816,6 @@ rule Read_Files{
     condition:
 	$string1
 }
-
 
 rule Enumerate_filesystem_info{
     strings:
