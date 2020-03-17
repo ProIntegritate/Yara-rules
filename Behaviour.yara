@@ -1,4 +1,4 @@
-// Last update: 02:53 2020-03-12
+// Last update: 14:41 2020-03-17
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -115,9 +115,10 @@ rule Decoding_Base64_Payload{
 	$string6 = "base64_decode" nocase ascii wide
 	$string7 = "B64D" nocase ascii wide
 	$string8 = "base64ToStream" nocase ascii wide
+	$string9 = "base64" nocase ascii wide
     condition:
 	($string1 and $string2) or
-	($string3 and $string4) or
+	($string3 and ($string4 or $string9)) or
 	$string5 or $string6 or $string7 or $string8
 }
 
@@ -159,8 +160,12 @@ rule Payload_Download{
         $string4 = "gnirtSdaolnwoD" nocase ascii wide // reversed
         $string5 = "DownloadData" nocase ascii wide
         $string6 = "ataDdaolnwoD" nocase ascii wide // reversed
+	$msxml1 = "Msxml2.XMLHttp" nocase ascii wide
+	$msxml2 = ".open" nocase ascii wide
+	$msxml3 = ".send" nocase ascii wide
+
     condition:
-	any of ($string*)
+	any of ($string*) or all of ($msxml*)
 }
 
 rule Access_Cryptograpic_Libraries{
@@ -777,8 +782,9 @@ rule Creates_Folders{
 rule Deletes_Folders{
     strings:
 	$string1 = "RemoveDirectory"
+	$string2 = ".DeleteFolder" nocase ascii wide
     condition:
-	$string1
+	any of ($string*)
 }
 
 rule Create_Files{
@@ -805,7 +811,8 @@ rule Move_Files{
 rule Delete_Files{
     strings:
 	$string1 = "DeleteFile"
-	$string2 = "Kill"
+	$string2 = "Kill" nocase ascii wide
+	$string3 = ".DeleteFile" nocase ascii wide
     condition:
 	any of ($string*)
 }
@@ -1101,3 +1108,9 @@ rule Hex_Payload{
         any of ($hexpayload*) 
 }
 
+rule Process_Sleep{
+    strings:
+        $sleep1 = "WScript.Sleep" nocase ascii wide
+    condition:
+        any of ($sleep*) 
+}
