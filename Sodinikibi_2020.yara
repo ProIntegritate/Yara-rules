@@ -1,4 +1,4 @@
-// Last updated: 16:39 2020-03-04
+// Last updated: 21:41 2020-03-17
 
 import "hash"
 import "pe"
@@ -21,7 +21,8 @@ rule Sodinokibi_Payload{
 	 hash.md5(pe.rich_signature.clear_data) == "21ba709282442aaf42d874166711d4fc" or
 	 hash.md5(pe.rich_signature.clear_data) == "58981d802dffcfc4dba8bd8577bf4c57" or
 	 hash.md5(pe.rich_signature.clear_data) == "9985b043d95ba30a4fbdb57f54d29acc" or
-	 hash.md5(pe.rich_signature.clear_data) == "23e6b82d0f7959d5f6cf6d2bcabbc7d7")
+	 hash.md5(pe.rich_signature.clear_data) == "23e6b82d0f7959d5f6cf6d2bcabbc7d7" or
+	 hash.md5(pe.rich_signature.clear_data) == "07c8a52db8264e1777fc1b52e8d00bf5")
 }
 
 rule Sodinokibi_Loader{
