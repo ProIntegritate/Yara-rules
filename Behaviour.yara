@@ -1,4 +1,4 @@
-// Last update: 14:41 2020-03-17
+// Last update: 10:25 2020-03-18
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -231,8 +231,12 @@ rule Legacy_WebQuery{
 	$string2 = "WinHttpOpen" nocase ascii wide
 	$string3 = "createobject" nocase ascii wide
 	$string4 = "msxml2.xmlhttp" nocase ascii wide
+	$string5 = "urlmon.dll" nocase ascii wide
+	$string6 = "URLDownloadToFile" nocase ascii wide
     condition:
-	($string1 and $string2) or ($string3 and $string4)
+	($string1 and $string2) or
+	($string3 and $string4) or
+	($string5 and $string6)
 }
 
 rule DotNet_DNS{
