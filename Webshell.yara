@@ -1,7 +1,7 @@
-// Last updated: 21:44 2020-03-03
+// Last updated: 01:29 2020-03-23
 //
 // Detects:
-// 	113 families of PHP webshells + Obfuscator + Compressed
+// 	114 families of PHP webshells + Obfuscator + Compressed
 // 	 51 families of ASP webshells
 // 	 13 families of JSP webshells
 //	  5 families of CFM webshells + Encoded pages
@@ -21,6 +21,7 @@ rule PHP_Webshell{
                 $phpwebshell4 = "passthru" nocase ascii wide
                 $phpwebshell5 = "popen" nocase ascii wide
                 $phpwebshell6 = "proc_open" nocase ascii wide
+		$phpwebshell7 = "@opendir" nocase ascii wide
 
 		$form1 = "<form" nocase ascii wide
 		$form2 = "<input" nocase ascii wide
