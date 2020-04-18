@@ -1,0 +1,19 @@
+import "hash"
+import "pe"
+
+rule 2020-04-19_Trickbot_RichHash{
+
+    meta:
+        description = "Trickbot Richhash signatures"
+        reference = "https://twitter.com/fr0s7_/status/1251445876398194690"
+        author = "@Pro_Integritate"
+        maltype = "Trojan/Stealer"
+
+    condition:
+	uint16(0x00) == 0x5a4d and
+	(hash.md5(pe.rich_signature.clear_data) == "36f941e538bb8076b2e8de495a747bb0" or
+	 hash.md5(pe.rich_signature.clear_data) == "a0e4e015e6fd5a8d0eb53ff98ac819f6")
+}
+
+
+
