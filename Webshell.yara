@@ -1,7 +1,7 @@
-// Last updated: 01:29 2020-03-23
+// Last updated: 10:22 2020-04-20
 //
 // Detects:
-// 	114 families of PHP webshells + Obfuscator + Compressed
+// 	115 families of PHP webshells + Obfuscator + Compressed + Encoded
 // 	 51 families of ASP webshells
 // 	 13 families of JSP webshells
 //	  5 families of CFM webshells + Encoded pages
@@ -45,9 +45,9 @@ rule PHP_Obfuscator{
 		3 of ($php*)
 }
 
-rule PHP_Compressed_Payload{
+rule PHP_Compressed_Encoded_Payload{
         meta:
-                description = "Compressed PHP payload"
+                description = "Compressed or Encoded PHP payload"
                 author = "@Pro_Integritate"
                 maltype = "Webshell/Encoder"
         strings:
@@ -56,6 +56,8 @@ rule PHP_Compressed_Payload{
 		$decomp2 = "gzuncompress"
 		$decomp3 = "gzopen"
 		$decomp4 = "gzdecode"
+		$decomp5 = "eval(" // These two nullify the decompression, for encoded payloads only
+		$decomp6 = "eval ("
 
 		$decode = "base64" // "base64_decode"
 		$eval = "eval"
@@ -63,6 +65,10 @@ rule PHP_Compressed_Payload{
 		not (uint16(0x00) == 0x5a4d) and
 		$php and any of ($decomp*) and $decode and $eval
 }
+
+
+
+
 
 rule ASP_Webshell{
 
