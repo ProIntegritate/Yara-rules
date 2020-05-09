@@ -1,4 +1,4 @@
-// Last update: 2020-05-09 09:42
+// Last update: 2020-05-09 09:50
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -1128,7 +1128,7 @@ rule Hex_Payload{
 		$hexpayload1 = /[0-9a-fA-F]{1,2}.[0-9a-fA-F]{1,2}.[0-9a-fA-F]{1,2}.[0-9a-fA-F]{1,2}.[0-9a-fA-F]{1,2}.[0-9a-fA-F]{1,2}/
 		$hexpayload2 = /[0-9a-fA-F]{1,2}..[0-9a-fA-F]{1,2}..[0-9a-fA-F]{1,2}..[0-9a-fA-F]{1,2}..[0-9a-fA-F]{1,2}..[0-9a-fA-F]{1,2}/
 		$hexpayload3 = /[0-9a-fA-F]{1,2}...[0-9a-fA-F]{1,2}...[0-9a-fA-F]{1,2}...[0-9a-fA-F]{1,2}...[0-9a-fA-F]{1,2}...[0-9a-fA-F]{1,2}/
-		$hexpayload3 = /[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}/
+		$hexpayload4 = /[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}/
 	condition:
 		any of ($hexpayload*) 
 }
