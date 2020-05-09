@@ -1,4 +1,4 @@
-// Last update: 2020-04-17 22:27
+// Last update: 2020-05-09 09:42
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -614,12 +614,13 @@ rule Reboot_Persistance{
 		$String2 = "nur\\noisreVtnerruc" nocase ascii // Reversed
 		$String3 = "schtasks" nocase ascii wide		 // Schtasks.exe /Create
 		$String4 = "create" nocase ascii wide 
-		$String5 = "sksathcs" nocase ascii wide		 // Reversed
-		$String6 = "etaerc" nocase ascii wide 
+		$String5 = "change" nocase ascii wide 
+		$String6 = "sksathcs" nocase ascii wide		 // Reversed
+		$String7 = "etaerc" nocase ascii wide 
 	condition:
 		($String1 or $String2) or
-		($String3 and $String4) or
-		($String5 and $String6)
+		($String3 and ($String4 or $String5) ) or
+		($String6 and $String7)
 }
 
 rule LOLBins{
@@ -891,7 +892,9 @@ rule Execute_Dynamic_Script_Code{
 		$string7 = "|iex" nocase ascii wide
 		$string8 = "fromCharCode" nocase ascii wide
 		$string9 = "execute " nocase ascii wide 	//vbscript
-		$string10 = " etucexe" nocase ascii wide
+		$string10 = "execute(" nocase ascii wide
+		$string11 = " etucexe" nocase ascii wide
+		$string12 = "(etucexe" nocase ascii wide
 	condition:
 		any of ($string*)
 }
@@ -1121,10 +1124,11 @@ rule Tunneling{
 }
 
 rule Hex_Payload{
-	strings:
-		$hexpayload1 = /0x[0-9a-fA-F]{1,2}\,0x[0-9a-fA-F]{1,2}\,0x[0-9a-fA-F]{1,2}/
-		$hexpayload2 = /[0-9a-fA-F]{1,2}\,[0-9a-fA-F]{1,2}\,[0-9a-fA-F]{1,2}/
-		$hexpayload3 = /\\x[0-9A-F]{2}\\x[0-9A-F]{2}\\x/
+	strings:    // Less specific now
+		$hexpayload1 = /[0-9a-fA-F]{1,2}.[0-9a-fA-F]{1,2}.[0-9a-fA-F]{1,2}.[0-9a-fA-F]{1,2}.[0-9a-fA-F]{1,2}.[0-9a-fA-F]{1,2}/
+		$hexpayload2 = /[0-9a-fA-F]{1,2}..[0-9a-fA-F]{1,2}..[0-9a-fA-F]{1,2}..[0-9a-fA-F]{1,2}..[0-9a-fA-F]{1,2}..[0-9a-fA-F]{1,2}/
+		$hexpayload3 = /[0-9a-fA-F]{1,2}...[0-9a-fA-F]{1,2}...[0-9a-fA-F]{1,2}...[0-9a-fA-F]{1,2}...[0-9a-fA-F]{1,2}...[0-9a-fA-F]{1,2}/
+		$hexpayload3 = /[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}....[0-9a-fA-F]{1,2}/
 	condition:
 		any of ($hexpayload*) 
 }
@@ -1217,4 +1221,3 @@ rule Check_Admin_Membership{
 	condition:
 		all of ($cham*)
 }
-
