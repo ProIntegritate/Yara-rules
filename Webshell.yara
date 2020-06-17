@@ -1,10 +1,10 @@
-// Last updated: 10:22 2020-04-20
+// Last updated: 21:31 2020-06-17
 //
 // Detects:
 // 	115 families of PHP webshells + Obfuscator + Compressed + Encoded
 // 	 51 families of ASP webshells
 // 	 13 families of JSP webshells
-//	  5 families of CFM webshells + Encoded pages
+//	  7 families of CFM webshells + Encoded pages
 
 rule PHP_Webshell{
         meta:
@@ -40,10 +40,15 @@ rule PHP_Obfuscator{
 		$php1 = "<?php" nocase ascii wide
 		$php2 = "Obfuscator" nocase ascii wide
 		$php3 = "www.fopo.com.ar" nocase ascii wide
+		$php4 = "goto" nocase ascii wide
+		$php5 = "system" nocase ascii wide
+		$php6 = "echo" nocase ascii wide
+		$php7 = "\"\\"
         condition:
 		not (uint16(0x00) == 0x5a4d) and
 		3 of ($php*)
 }
+
 
 rule PHP_Compressed_Encoded_Payload{
         meta:
