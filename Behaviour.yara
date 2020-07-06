@@ -1,4 +1,4 @@
-// Last update: 2020-05-09 09:50
+// Last update: 2020-07-06 10:01
 // Author: "@Pro_Integritate"
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
@@ -377,10 +377,11 @@ rule Registry_Delete_Information{
 
 rule Document_RTF_Obj_Payload{
 	strings:
-		$string1 = "rtf" nocase
-		$string2 = "objdata" nocase
+		$string1 = "{\\r" nocase ascii wide 
+		$string2 = "objdata" nocase ascii wide 
+		$string3 = "objemb" nocase ascii wide 
 	condition:
-		all of ($string*)
+		$string1 and ($string2 or $string3)
 }
 
 rule GZip_Stream{ // Position independend, not Magic bytes specifically
@@ -526,10 +527,18 @@ rule Registry_HKEY_Hive_Reference{
 
 rule Autoit_Scripting{
 	strings:
-		$String1 = "AutoIt"
-		$String2 = "FSoftware"
+		$String1 = "FSoftware" nocase ascii wide
+		$String2 = "AutoIt v3" nocase ascii wide
+		$String3 = "AutoIt3Execute" nocase ascii wide
+		$String4 = "Software\\AutoIt" nocase ascii wide
+		$String5 = "third-party compiled AutoIt script" nocase ascii wide
+		$String6 = "AutoIt script files (*.au3, *.a3x)" nocase ascii wide
+		$String7 = "AutoIt has detected the stack has become corrupt" nocase ascii wide
+		$String8 = "AutoIt supports the __stdcall" nocase ascii wide
+		$String9 = "reserved for AutoIt internal use" nocase ascii wide
+
 	condition:
-		all of ($String*)
+		3 of ($String*)
 }
 
 rule External_Scripting{
@@ -899,7 +908,7 @@ rule Execute_Dynamic_Script_Code{
 		any of ($string*)
 }
 
-rule Console_application{
+rule INFO_Console_application{
 	strings:
 		$string1 = "GetCommandLine" nocase ascii wide 
 	condition:
@@ -1068,8 +1077,10 @@ rule VM_Detection{
 		$vm5 = "Win32_LogicalDisk" nocase ascii wide
 		$vm6 = ".Size" nocase ascii wide
 		$vm7 = "isProcessorFeaturePresent" nocase ascii wide
+		$vm8 = "win32_TemperatureProbe" nocase ascii wide
+		$vm9 = "status" nocase ascii wide
 	 condition:
-		($vm1 and $vm2) or ($vm3 and $vm4) or ($vm5 and $vm6) or $vm7
+		($vm1 and $vm2) or ($vm3 and $vm4) or ($vm5 and $vm6) or $vm7 or ($vm8 and $vm9)
 }
 
 rule lolbin_bitsadmin_download{
