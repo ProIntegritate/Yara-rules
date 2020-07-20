@@ -1,5 +1,6 @@
-// Last update: 2020-07-06 10:01
+// Last update: 12:01 2020-07-20
 // Author: "@Pro_Integritate"
+// Tested with: Yara 4.0.2
 // 
 // Should be used to give you a sorta-idea of a files capabilities.
 //
@@ -55,7 +56,7 @@ rule INFO_RichHeader{
 
 rule INFO_PDB_Path{
 	strings:
-		$string1 = ".pdb" nocase nocase ascii wide
+		$string1 = ".pdb" nocase ascii wide
 		$string2 = ":\\" ascii wide
 	condition:
 		all of ($string*)
@@ -101,6 +102,7 @@ rule Shell_External_Commands{
 		$string5 = "Shell.Application" nocase ascii wide
 		$string6 = "WScript.Shell" nocase ascii wide
 		$string7 = "CreateProcess" nocase ascii wide
+		$string8 = "WinExec" nocase ascii wide
 	condition:
 		any of ($string*)
 }
@@ -1231,4 +1233,20 @@ rule Check_Admin_Membership{
 		$cham5 = "Administrator" nocase ascii wide
 	condition:
 		all of ($cham*)
+}
+
+rule VB_EnableEventMonitor{
+	strings:
+		$hklm = "HKLM" nocase ascii wide
+		$VBMon = "VBA\\Monitors" nocase ascii wide
+	condition:
+		$hklm and $VBMon
+}
+
+rule INFO_Cab_Containing_Executable{
+	strings:
+		$exe1 = ".exe" nocase ascii wide
+		$exe2 = ".dll" nocase ascii wide
+	condition:
+	any of ($exe*) and uint16(0x00) == 0x534d and uint16(0x02) == 0x4643
 }
