@@ -1,4 +1,4 @@
-// Last update: 12:01 2020-07-20
+// Last update: 20:36 2020-07-22
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -1249,4 +1249,19 @@ rule INFO_Cab_Containing_Executable{
 		$exe2 = ".dll" nocase ascii wide
 	condition:
 	any of ($exe*) and uint16(0x00) == 0x534d and uint16(0x02) == 0x4643
+}
+
+rule VB_Array{
+	strings:    
+		$VBArray1 = "Array("
+		$VBArray2 = "Array ("
+	condition:
+		any of ($VBArray*) 
+}
+
+rule Decimal_Payload{
+	strings:    
+		$Decpayload = /[0-9]{1,2},[0-9]{1,2},[0-9]{1,2},[0-9]{1,2},[0-9]{1,2},[0-9]{1,2},[0-9]{1,2},[0-9]{1,2},[0-9]{1,2},[0-9]{1,2}/
+	condition:
+		$Decpayload
 }
