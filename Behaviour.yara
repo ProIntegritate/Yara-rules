@@ -1,4 +1,4 @@
-// Last update: 21:05 2020-07-22
+// Last update: 10:33 2020-09-12
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -1265,3 +1265,13 @@ rule Decimal_Payload{
 	condition:
 		$Decpayload
 }
+
+rule Macro_AutoOpen{
+	strings:    
+		$macro1 = "Auto_Open"
+		$macro2 = "AutoOpen"
+		$macro3 = "Workbook_Open"
+	condition:
+		any of ($macro*)
+}
+
