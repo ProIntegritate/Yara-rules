@@ -1,4 +1,5 @@
-// Last update: 10:33 2020-09-12
+
+// Last update: 00:40 2020-10-11
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -1029,24 +1030,6 @@ rule Use_of_Credentials{
 		any of ($string*)
 }
 
-rule Word_Scripting_Document_open{
-	strings:
-		$string1 = "Document_open" nocase ascii wide 
-	condition:
-		uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
-		(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300) and
-		$string1
-}
-
-rule Word_Embedded_Object{
-	strings:
-		$string1 = "Embedded Object" nocase ascii wide 
-	condition:
-		uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
-		(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300) and
-		$string1
-}
-
 rule Base64_Payload{
 	strings:
 		$rxbs1 = /[0-9a-zA-Z+\/]{12}\=/
@@ -1270,8 +1253,27 @@ rule Macro_AutoOpen{
 	strings:    
 		$macro1 = "Auto_Open"
 		$macro2 = "AutoOpen"
-		$macro3 = "Workbook_Open"
+		$macro3 = "Workbook_Open"	// Excel specific
+		$macro4 = "AutoExec"
+		$macro5 = "App_DocumentOpen"
 	condition:
 		any of ($macro*)
 }
 
+rule Word_Scripting_Document_open{
+	strings:
+		$string1 = "Document_open" nocase ascii wide 	// Word specific
+	condition:
+		uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
+		(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300) and
+		$string1
+}
+
+rule Word_Embedded_Object{
+	strings:
+		$string1 = "Embedded Object" nocase ascii wide 
+	condition:
+		uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
+		(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300) and
+		$string1
+}
