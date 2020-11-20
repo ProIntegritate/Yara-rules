@@ -1,5 +1,4 @@
-
-// Last update: 00:40 2020-10-11
+// Last update: 10:05 2020-11-20
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -121,11 +120,13 @@ rule Decoding_Base64_Payload{
 		$string9 = "base64" nocase ascii wide
 		$string10 = "Cryptography" nocase ascii wide
 		$string11 = "FromBase64Transform" nocase ascii wide
+		$string12 = "2933BF90-7B36-11D2-B20E-00C04F983E60" nocase ascii wide
 	condition:
 		($string1 and $string2) or
 		($string3 and ($string4 or $string9)) or
 		$string5 or $string6 or $string7 or $string8 or
-		($string10 and $string11)
+		($string10 and $string11) or
+		($string7 and $string12)
 }
 
 rule URL{
@@ -1030,6 +1031,24 @@ rule Use_of_Credentials{
 		any of ($string*)
 }
 
+rule Word_Scripting_Document_open{
+	strings:
+		$string1 = "Document_open" nocase ascii wide 
+	condition:
+		uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
+		(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300) and
+		$string1
+}
+
+rule Word_Embedded_Object{
+	strings:
+		$string1 = "Embedded Object" nocase ascii wide 
+	condition:
+		uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
+		(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300) and
+		$string1
+}
+
 rule Base64_Payload{
 	strings:
 		$rxbs1 = /[0-9a-zA-Z+\/]{12}\=/
@@ -1249,31 +1268,34 @@ rule Decimal_Payload{
 		$Decpayload
 }
 
-rule Macro_AutoOpen{
+rule Macro_Execute_script{
 	strings:    
-		$macro1 = "Auto_Open"
-		$macro2 = "AutoOpen"
-		$macro3 = "Workbook_Open"	// Excel specific
-		$macro4 = "AutoExec"
-		$macro5 = "App_DocumentOpen"
+		$macro1 = "Auto_Open" nocase ascii wide
+		$macro2 = "AutoOpen" nocase ascii wide
+		$macro3 = "Workbook_Open" nocase ascii wide
+		$macro4 = "Auto_Close" nocase ascii wide
 	condition:
 		any of ($macro*)
 }
 
-rule Word_Scripting_Document_open{
-	strings:
-		$string1 = "Document_open" nocase ascii wide 	// Word specific
+rule Wevtutil_Clear_Logs{
+	strings:    
+		$command1 = "wevtutil" nocase ascii wide
+		$command2 = " cl " nocase ascii wide
 	condition:
-		uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
-		(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300) and
-		$string1
+		$command1 and $command2
 }
 
-rule Word_Embedded_Object{
-	strings:
-		$string1 = "Embedded Object" nocase ascii wide 
+rule CoinMiner{
+	strings:    
+		$miner1 = "Usage: xmrig" nocase ascii wide
+		$miner2 = "xmrig.com" nocase ascii wide
+		$miner3 = "xmrig-proxy" nocase ascii wide
+		$miner4 = "xmrig-cuda.dll" nocase ascii wide
+		$miner5 = "XMRig 5.0.0" nocase ascii wide
+		$minerparam1 = "--coin=" nocase ascii wide
+		$minerparam2 = "--url=" nocase ascii wide
+		$minerparam3 = "--user=" nocase ascii wide
 	condition:
-		uint16(0x00) == 0xcfd0 and uint16(0x02) == 0xe011 and
-		(uint16(0x19) == 0x0320 or uint16(0x19) == 0x0300) and
-		$string1
+		any of ($miner*) or all of ($minerparam*)
 }
