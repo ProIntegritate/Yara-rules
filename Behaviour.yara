@@ -1,4 +1,4 @@
-// Last update: 10:05 2020-11-20
+// Last update: 18:27 2020-12-09
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -596,10 +596,11 @@ rule Registry_Commandline{
 		any of ($string*)
 }
 
-rule Accessing_Or_Creating_Services{
+rule Accessing_Starting_Or_Creating_Services{
 	strings:
 		$string1 = "OpenService" nocase ascii wide 
 		$string2 = "CreateService" nocase ascii wide 
+		$string3 = "StartService" nocase ascii wide 
 	condition:
 		any of ($string*)
 }
@@ -1298,4 +1299,17 @@ rule CoinMiner{
 		$minerparam3 = "--user=" nocase ascii wide
 	condition:
 		any of ($miner*) or all of ($minerparam*)
+}
+
+rule UAC_Bypass_Schtasks{
+	strings:    
+		$reg1 = "HKCU" nocase ascii wide
+		$reg2 = "Environment" nocase ascii wide
+		$schtask1 = "schtasks" nocase ascii wide
+		$schtask2 = "/run" nocase ascii wide
+		$schtask3 = "/tn" nocase ascii wide
+		$schtask4 = "DiskCleanup" nocase ascii wide
+		$schtask5 = "SilentCleanup" nocase ascii wide
+	condition:
+		all of ($reg*) and all of ($schtask*)
 }
