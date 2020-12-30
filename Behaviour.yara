@@ -1,4 +1,4 @@
-// Last update: 18:27 2020-12-09
+// Last update: 18:33 2020-12-30
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -1312,4 +1312,13 @@ rule UAC_Bypass_Schtasks{
 		$schtask5 = "SilentCleanup" nocase ascii wide
 	condition:
 		all of ($reg*) and all of ($schtask*)
+}
+
+rule INFO_GoLang{
+	strings:    
+		$golang1 = "runtime.go" nocase ascii wide
+		$golang2 = "ddgs/vendor/golang.org/" nocase ascii wide
+		$golang3 = "encoding/gob." nocase ascii wide
+	condition:
+		any of ($golang*)
 }
