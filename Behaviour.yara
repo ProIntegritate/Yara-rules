@@ -1,4 +1,4 @@
-// Last update: 18:33 2020-12-30
+// Last update: 23:21 2021-01-06
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -540,9 +540,11 @@ rule Autoit_Scripting{
 		$String7 = "AutoIt has detected the stack has become corrupt" nocase ascii wide
 		$String8 = "AutoIt supports the __stdcall" nocase ascii wide
 		$String9 = "reserved for AutoIt internal use" nocase ascii wide
+		$String10 = "autoitscript.com" nocase ascii wide
+		$String11 = "AutoIt Team" nocase ascii wide
 
 	condition:
-		3 of ($String*)
+		2 of ($String*)
 }
 
 rule External_Scripting{
