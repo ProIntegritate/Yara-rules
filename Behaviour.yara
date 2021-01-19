@@ -1,4 +1,4 @@
-// Last update: 23:21 2021-01-06
+// Last update: 13:59 2021-01-19
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -93,7 +93,7 @@ rule Network_Access{
 		any of ($net*)
 }
 
-rule Shell_External_Commands{
+rule Create_Process_Or_Shell_External_Commands{
 	strings:
 		$string1 = "shell32.dll" nocase ascii wide
 		$string2 = "ShellExecute" nocase ascii wide
@@ -103,6 +103,7 @@ rule Shell_External_Commands{
 		$string6 = "WScript.Shell" nocase ascii wide
 		$string7 = "CreateProcess" nocase ascii wide
 		$string8 = "WinExec" nocase ascii wide
+		$string9 = "DelegateCreateProcessA" nocase ascii wide
 	condition:
 		any of ($string*)
 }
