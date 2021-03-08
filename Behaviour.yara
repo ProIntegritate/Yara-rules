@@ -1,4 +1,4 @@
-// Last update: 13:59 2021-01-19
+// Last update: 23:02 2021-03-08
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -774,7 +774,7 @@ rule Suspends_running_Threads{
 
 rule Resumes_suspended_Threads{
 	strings:
-		$string1 = "ResumeThread" nocase ascii wide 
+		$string1 = "ResumeThread" nocase ascii wide // Also works for DelegateResumeThread
 	condition:
 		all of ($string*)
 }
@@ -1324,4 +1324,25 @@ rule INFO_GoLang{
 		$golang3 = "encoding/gob." nocase ascii wide
 	condition:
 		any of ($golang*)
+}
+
+rule INFO_ATL_MFC_Trace{
+	strings:    
+		$string = "atlTrace" nocase ascii wide
+	condition:
+		$string
+}
+
+rule INFO_Create_Mutex{
+	strings:    
+		$string = "CreateMutex" nocase ascii wide
+	condition:
+		$string
+}
+
+rule Enumerates_File_Security{
+	strings:    
+		$string = "GetFileSecurity" nocase ascii wide
+	condition:
+		$string
 }
