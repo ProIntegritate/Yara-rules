@@ -1,10 +1,10 @@
-// Last updated: 21:31 2020-06-17
+// Last updated: 23:17 2021-03-08
 //
 // Detects:
-// 	115 families of PHP webshells + Obfuscator + Compressed + Encoded
+// 	116 families of PHP webshells + Obfuscator + Compressed + Encoded
 // 	 51 families of ASP webshells
 // 	 13 families of JSP webshells
-//	  7 families of CFM webshells + Encoded pages
+//	  5 families of CFM webshells + Encoded pages
 
 rule PHP_Webshell{
         meta:
@@ -21,14 +21,18 @@ rule PHP_Webshell{
                 $phpwebshell4 = "passthru" nocase ascii wide
                 $phpwebshell5 = "popen" nocase ascii wide
                 $phpwebshell6 = "proc_open" nocase ascii wide
-		$phpwebshell7 = "@opendir" nocase ascii wide
+	 $phpwebshell7 = "@opendir" nocase ascii wide
+	 $phpwebshell8 = "eval" nocase ascii wide
 
-		$form1 = "<form" nocase ascii wide
-		$form2 = "<input" nocase ascii wide
+	$form1 = "<form" nocase ascii wide
+	$form2 = "<input" nocase ascii wide
+	$form3 = "escapeshellarg" nocase ascii wide
+	$form4 = "/usr/bin/" nocase ascii wide
+	$form5 = "POST" nocase ascii wide
 
         condition:
-		not (uint16(0x00) == 0x5a4d) and
-                $generic1 and 2 of ($phpwebshell*) and all of ($form*)
+	not (uint16(0x00) == 0x5a4d) and
+                $generic1 and any of ($phpwebshell*) and any of ($form*)
 }
 
 rule PHP_Obfuscator{
@@ -37,16 +41,16 @@ rule PHP_Obfuscator{
                 author = "@Pro_Integritate"
                 maltype = "Webshell/Encoder"
         strings:
-		$php1 = "<?php" nocase ascii wide
-		$php2 = "Obfuscator" nocase ascii wide
-		$php3 = "www.fopo.com.ar" nocase ascii wide
-		$php4 = "goto" nocase ascii wide
-		$php5 = "system" nocase ascii wide
-		$php6 = "echo" nocase ascii wide
+	$php1 = "<?php" nocase ascii wide
+	$php2 = "Obfuscator" nocase ascii wide
+	$php3 = "www.fopo.com.ar" nocase ascii wide
+	$php4 = "goto" nocase ascii wide
+	$php5 = "system" nocase ascii wide
+	$php6 = "echo" nocase ascii wide
 		$php7 = "\"\\"
         condition:
-		not (uint16(0x00) == 0x5a4d) and
-		3 of ($php*)
+	not (uint16(0x00) == 0x5a4d) and
+	3 of ($php*)
 }
 
 
@@ -72,6 +76,19 @@ rule PHP_Compressed_Encoded_Payload{
 }
 
 
+rule PHP_Emotet_Webshell{
+        meta:
+                description = "Emotet SAP Webshell as payload in Wordpress"
+                author = "@Pro_Integritate"
+                maltype = "Webshell/Botnet"
+        strings:
+		$php = "<?php"
+		$content1 = "$wp_kses_data"
+		$content2 = "'O7ZDrQwa6UbFoqf"
+        condition:
+		not (uint16(0x00) == 0x5a4d) and
+		$php and all of ($content*)
+}
 
 
 
