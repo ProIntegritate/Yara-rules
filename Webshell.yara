@@ -21,20 +21,20 @@ rule PHP_Webshell{
                 $phpwebshell4 = "passthru" nocase ascii wide
                 $phpwebshell5 = "popen" nocase ascii wide
                 $phpwebshell6 = "proc_open" nocase ascii wide
-	 $phpwebshell7 = "@opendir" nocase ascii wide
-	 $phpwebshell8 = "eval" nocase ascii wide
-	 $phpwebshell8 = "curl_exec" nocase ascii wide
+                $phpwebshell7 = "@opendir" nocase ascii wide
+                phpwebshell8 = "eval" nocase ascii wide
+                $phpwebshell8 = "curl_exec" nocase ascii wide
 
-	$form1 = "<form" nocase ascii wide
-	$form2 = "<input" nocase ascii wide
-	$form3 = "escapeshellarg" nocase ascii wide
-	$form4 = "/usr/bin/" nocase ascii wide
-	$form5 = "POST" nocase ascii wide
-	$form5 = "fgets(STDIN" nocase ascii wide
-	$form5 = "base64_decode" nocase ascii wide
+                $form1 = "<form" nocase ascii wide
+                $form2 = "<input" nocase ascii wide
+                $form3 = "escapeshellarg" nocase ascii wide
+                $form4 = "/usr/bin/" nocase ascii wide
+                $form5 = "POST" nocase ascii wide
+                $form5 = "fgets(STDIN" nocase ascii wide
+                $form5 = "base64_decode" nocase ascii wide
 
         condition:
-	not (uint16(0x00) == 0x5a4d) and
+		(uint16(0x00) == 0x5a4d) and
                 $generic1 and any of ($phpwebshell*) and any of ($form*)
 }
 
@@ -44,16 +44,16 @@ rule PHP_Obfuscator{
                 author = "@Pro_Integritate"
                 maltype = "Webshell/Encoder"
         strings:
-	$php1 = "<?php" nocase ascii wide
-	$php2 = "Obfuscator" nocase ascii wide
-	$php3 = "www.fopo.com.ar" nocase ascii wide
-	$php4 = "goto" nocase ascii wide
-	$php5 = "system" nocase ascii wide
-	$php6 = "echo" nocase ascii wide
+		$php1 = "<?php" nocase ascii wide
+		$php2 = "Obfuscator" nocase ascii wide
+		$php3 = "www.fopo.com.ar" nocase ascii wide
+		$php4 = "goto" nocase ascii wide
+		$php5 = "system" nocase ascii wide
+		$php6 = "echo" nocase ascii wide
 		$php7 = "\"\\"
         condition:
-	not (uint16(0x00) == 0x5a4d) and
-	3 of ($php*)
+		not (uint16(0x00) == 0x5a4d) and
+		3 of ($php*)
 }
 
 
