@@ -1,7 +1,7 @@
-// Last updated: 23:17 2021-03-08
+// Last updated: 11:59 2021-06-16
 //
 // Detects:
-// 	116 families of PHP webshells + Obfuscator + Compressed + Encoded
+// 	117 families of PHP webshells + Obfuscator + Compressed + Encoded
 // 	 51 families of ASP webshells
 // 	 13 families of JSP webshells
 //	  5 families of CFM webshells + Encoded pages
@@ -23,12 +23,15 @@ rule PHP_Webshell{
                 $phpwebshell6 = "proc_open" nocase ascii wide
 	 $phpwebshell7 = "@opendir" nocase ascii wide
 	 $phpwebshell8 = "eval" nocase ascii wide
+	 $phpwebshell8 = "curl_exec" nocase ascii wide
 
 	$form1 = "<form" nocase ascii wide
 	$form2 = "<input" nocase ascii wide
 	$form3 = "escapeshellarg" nocase ascii wide
 	$form4 = "/usr/bin/" nocase ascii wide
 	$form5 = "POST" nocase ascii wide
+	$form5 = "fgets(STDIN" nocase ascii wide
+	$form5 = "base64_decode" nocase ascii wide
 
         condition:
 	not (uint16(0x00) == 0x5a4d) and
