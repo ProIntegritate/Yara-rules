@@ -1,4 +1,4 @@
-// Last update: 00:02 2021-07-16
+// Last update: 12:35 2021-07-16
 // Author: "@Pro_Integritate"// Last update: 14:51 2021-03-14
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
@@ -1202,6 +1202,11 @@ rule Modifies_Windows_Defender{
 		$wd2 = "DisableBehaviorMonitoring" nocase ascii wide
 		$wd3 = "DisableOnAccessProtection" nocase ascii wide
 		$wd4 = "DisableScanOnRealtimeEnable" nocase ascii wide
+		$wd5 = "IOAVMaxSize" nocase ascii wide
+		$wd6 = "DisableIOAVProtection" nocase ascii wide
+		$wd7 = "DisableRawWriteNotification" nocase ascii wide
+		$wd8 = "DisableIntrusionPreventionSystem" nocase ascii wide
+		$wd9 = "DisableInformationProtectionControl" nocase ascii wide
 	condition:
 		all of ($gen*) and
 		any of ($wd*)
