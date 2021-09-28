@@ -1,5 +1,4 @@
-// Last update: 12:35 2021-07-16
-// Author: "@Pro_Integritate"// Last update: 14:51 2021-03-14
+// Last update: 13:03 2021-09-28
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -105,6 +104,7 @@ rule Create_Process_Or_Shell_External_Commands{
 		$string7 = "CreateProcess" nocase ascii wide
 		$string8 = "WinExec" nocase ascii wide
 		$string9 = "DelegateCreateProcessA" nocase ascii wide
+		$string10 = "Application.Run" nocase ascii wide
 	condition:
 		any of ($string*)
 }
@@ -1094,11 +1094,10 @@ rule VM_Detection{
 
 rule lolbin_bitsadmin_download{
 	strings:
-		$main = "bitsadmin" nocase ascii wide
-		$bad1 = "/download " nocase ascii wide
-		$bad2 = "/transfer " nocase ascii wide
+		$badl = "bitsadmin" nocase ascii wide
+		$bad2 = "/download " nocase ascii wide
 	 condition:
-		$main and any of ($bad*)
+		all of ($bad*)
 }
 
 rule Creates_ActiveXObject{
@@ -1202,11 +1201,6 @@ rule Modifies_Windows_Defender{
 		$wd2 = "DisableBehaviorMonitoring" nocase ascii wide
 		$wd3 = "DisableOnAccessProtection" nocase ascii wide
 		$wd4 = "DisableScanOnRealtimeEnable" nocase ascii wide
-		$wd5 = "IOAVMaxSize" nocase ascii wide
-		$wd6 = "DisableIOAVProtection" nocase ascii wide
-		$wd7 = "DisableRawWriteNotification" nocase ascii wide
-		$wd8 = "DisableIntrusionPreventionSystem" nocase ascii wide
-		$wd9 = "DisableInformationProtectionControl" nocase ascii wide
 	condition:
 		all of ($gen*) and
 		any of ($wd*)
@@ -1353,3 +1347,21 @@ rule Enumerates_File_Security{
 	condition:
 		$string
 }
+
+rule INFO_Compressed_File{
+	strings:    
+		$string1 = "libz.dll" nocase ascii wide
+		$string2 = "Jean-loup Gailly & Mark Adler" nocase ascii wide
+		$string3 = "www.zlib.net" nocase ascii wide
+	condition:
+		all of ($string*)
+}
+
+rule Downgrading_RDP_Insecure{
+	strings:    
+		$string1 = "CredSSP" nocase ascii wide
+		$string2 = "AllowEncryptionOracle" nocase ascii wide
+	condition:
+		all of ($string*)
+}
+
