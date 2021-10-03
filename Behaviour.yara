@@ -1,4 +1,4 @@
-// Last update: 13:03 2021-09-28
+// Last update: 21:34 2021-10-03
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -1365,3 +1365,12 @@ rule Downgrading_RDP_Insecure{
 		all of ($string*)
 }
 
+rule INFO_Python{
+	strings:    
+		$string1 = "import os" nocase ascii wide
+		$string2 = "from " nocase ascii wide
+		$string3 = " import " nocase ascii wide
+		$string4 = "def " nocase ascii wide
+	condition:
+		all of ($string*)
+}
