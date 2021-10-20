@@ -1,7 +1,7 @@
-// Last updated: 11:59 2021-06-16
+// Last updated: 20:54 2021-10-20
 //
 // Detects:
-// 	117 families of PHP webshells + Obfuscator + Compressed + Encoded
+// 	118 families of PHP webshells + Obfuscator + Compressed + Encoded
 // 	 51 families of ASP webshells
 // 	 13 families of JSP webshells
 //	  5 families of CFM webshells + Encoded pages
@@ -32,9 +32,10 @@ rule PHP_Webshell{
                 $form5 = "POST" nocase ascii wide
                 $form6 = "fgets(STDIN" nocase ascii wide
                 $form7 = "base64_decode" nocase ascii wide
+		$form8 = "urldecode" nocase ascii wide
 
         condition:
-		(uint16(0x00) == 0x5a4d) and
+		not (uint16(0x00) == 0x5a4d) and
                 $generic1 and any of ($phpwebshell*) and any of ($form*)
 }
 
@@ -78,7 +79,6 @@ rule PHP_Compressed_Encoded_Payload{
 		$php and any of ($decomp*) and $decode and $eval
 }
 
-
 rule PHP_Emotet_Webshell{
         meta:
                 description = "Emotet SAP Webshell as payload in Wordpress"
@@ -92,8 +92,6 @@ rule PHP_Emotet_Webshell{
 		not (uint16(0x00) == 0x5a4d) and
 		$php and all of ($content*)
 }
-
-
 
 rule ASP_Webshell{
 
@@ -133,7 +131,6 @@ rule ASP_Webshell{
 		  ($generic3 and ($generic4 or $generic5)) or $generic6) 
 
 }
-
 
 rule JSP_Webshell{
         meta:
