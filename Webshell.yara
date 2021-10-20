@@ -1,4 +1,4 @@
-// Last updated: 21:00 2021-10-20
+// Last updated: 21:06 2021-10-20
 //
 // Detects:
 // 	118 families of PHP webshells + Obfuscator + Compressed + Encoded
@@ -107,13 +107,13 @@ rule ASP_Webshell{
 		$asp2 = "<asp:" nocase ascii wide
 		$asp3 = "CmdAsp.asp" nocase ascii wide // specific signature
 		$asp4 = "WScript.Shell" nocase ascii wide
+		$asp5 = "Scripting.FileSystemObject" nocase ascii wide
 
 		$exec1 = "shell" nocase ascii wide
 		$exec2 = "execute" nocase ascii wide
 		$exec3 = "command" nocase ascii wide
 		$exec4 = "cmd" nocase ascii wide
 		$exec5 = ".Exec" nocase ascii wide
-		$exec6 = ".stdout.read" nocase ascii wide
 
 		$generic1 = "process" nocase ascii wide
 		$generic2 = "redirectStandard" nocase ascii wide
@@ -121,6 +121,7 @@ rule ASP_Webshell{
 		$generic4 = "POST" nocase ascii wide
 		$generic5 = "<input" nocase ascii wide
 		$generic6 = "StdOut" nocase ascii wide
+		$generic7 = ".stdout.read" nocase ascii wide
 		//TODO: $generic7 = "Request.QueryString" nocase ascii wide
 
         condition:
