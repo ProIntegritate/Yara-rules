@@ -1,4 +1,4 @@
-// Last update: 21:34 2021-10-03
+// Last update: 21:08 2021-10-20
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -105,6 +105,7 @@ rule Create_Process_Or_Shell_External_Commands{
 		$string8 = "WinExec" nocase ascii wide
 		$string9 = "DelegateCreateProcessA" nocase ascii wide
 		$string10 = "Application.Run" nocase ascii wide
+		$string11 = ".ShellExecute" nocase ascii wide
 	condition:
 		any of ($string*)
 }
