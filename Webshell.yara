@@ -1,8 +1,8 @@
-// Last updated: 20:54 2021-10-20
+// Last updated: 20:58 2021-10-206
 //
 // Detects:
 // 	118 families of PHP webshells + Obfuscator + Compressed + Encoded
-// 	 51 families of ASP webshells
+// 	 52 families of ASP webshells
 // 	 13 families of JSP webshells
 //	  5 families of CFM webshells + Encoded pages
 
@@ -113,6 +113,7 @@ rule ASP_Webshell{
 		$exec3 = "command" nocase ascii wide
 		$exec4 = "cmd" nocase ascii wide
 		$exec5 = ".Exec" nocase ascii wide
+		$exec6 = "getCommandOutput" nocase ascii wide
 
 		$generic1 = "process" nocase ascii wide
 		$generic2 = "redirectStandard" nocase ascii wide
