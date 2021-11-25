@@ -1,4 +1,4 @@
-// Last updated: 21:06 2021-10-20
+// Last updated: 18:53 2021-11-25
 //
 // Detects:
 // 	118 families of PHP webshells + Obfuscator + Compressed + Encoded
@@ -130,7 +130,7 @@ rule ASP_Webshell{
                 any of ($asp*) and
 		any of ($exec*) and
 		( ($generic1 or $generic2) or
-		  ($generic3 and ($generic4 or $generic5)) or $generic6) 
+		  ($generic3 and ($generic4 or $generic5)) or $generic6 or $generic7) 
 
 }
 
