@@ -1,9 +1,9 @@
-// Last updated: 18:53 2021-11-25
+// Last updated: 15:38 2022-01-16
 //
 // Detects:
 // 	118 families of PHP webshells + Obfuscator + Compressed + Encoded
 // 	 52 families of ASP webshells
-// 	 13 families of JSP webshells
+// 	 14 families of JSP webshells
 //	  5 families of CFM webshells + Encoded pages
 
 rule PHP_Webshell{
@@ -145,26 +145,35 @@ rule JSP_Webshell{
 
                 $java1 = "jsp" nocase ascii wide
                 $java2 = "java" nocase ascii wide
+		$java3 = "<%@page" nocase ascii wide
 
 		$javascript = "javascript" nocase ascii wide
 
 		$io1 = "<FORM" nocase ascii wide
 		$io2 = "<INPUT" nocase ascii wide
 		$io3 = "Encoding" nocase ascii wide
+		$io4 = "POST" nocase ascii wide
 
 		$exec1 = "Process" nocase ascii wide
 		$exec2 = "command" nocase ascii wide
 		$exec3 = "Exec" nocase ascii wide
+		$exec4 = "ClassLoader" nocase ascii wide
 
 		$console1 = "Stream" nocase ascii wide
+		$console2 = "BASE64Decoder" nocase ascii wide
 
         condition:
 		not (uint16(0x00) == 0x5a4d) and
 		not $php and
 		( any of ($java*) and not $javascript ) and
-		( ($io1 and $io2) or ($io3) ) and
-		any of ($exec*) and $console1
+		( ($io1 and $io2) or ($io3) or ($io4) ) and
+		any of ($exec*) and
+		any of ($console*)
 }
+
+
+
+
 
 rule CFM_Encoded_file{
         meta:
