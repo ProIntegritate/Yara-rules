@@ -1,9 +1,9 @@
-// Last updated: 15:38 2022-01-16
+// Last updated: 2022-06-08 15:36
 //
 // Detects:
 // 	118 families of PHP webshells + Obfuscator + Compressed + Encoded
 // 	 52 families of ASP webshells
-// 	 14 families of JSP webshells
+// 	 15 families of JSP webshells (Latest: confluence JSP webshell)
 //	  5 families of CFM webshells + Encoded pages
 
 rule PHP_Webshell{
@@ -147,8 +147,6 @@ rule JSP_Webshell{
                 $java2 = "java" nocase ascii wide
 		$java3 = "<%@page" nocase ascii wide
 
-		$javascript = "javascript" nocase ascii wide
-
 		$io1 = "<FORM" nocase ascii wide
 		$io2 = "<INPUT" nocase ascii wide
 		$io3 = "Encoding" nocase ascii wide
@@ -165,7 +163,7 @@ rule JSP_Webshell{
         condition:
 		not (uint16(0x00) == 0x5a4d) and
 		not $php and
-		( any of ($java*) and not $javascript ) and
+		( any of ($java*) ) and
 		( ($io1 and $io2) or ($io3) or ($io4) ) and
 		any of ($exec*) and
 		any of ($console*)
