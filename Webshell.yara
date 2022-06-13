@@ -11,6 +11,13 @@ rule PHP_Webshell{
                 description = "Generic PHP Webshell signature"
                 author = "@Pro_Integritate"
                 maltype = "Webshell"
+		date = "2022-06-08"
+		yarahub_reference_md5 = "ea4bfb665e54953275f8120844b2a819" // Viper webshell as sample
+		yarahub_uuid = "70e3f4cd-32f1-4e29-bd25-b4dd784214ef"
+		yarahub_license = "CC BY 4.0"
+		yarahub_reference_link = "https://github.com/ProIntegritate/Yara-rules/blob/master/Webshell.yara"
+		yarahub_rule_matching_tlp = "TLP:WHITE"
+		yarahub_rule_sharing_tlp = "TLP:WHITE"
 
         strings:
                 $generic1 = "?php" nocase ascii wide
@@ -44,6 +51,14 @@ rule PHP_Obfuscator{
                 description = "PHP Obfuscator, used sometimes by PHP webshells"
                 author = "@Pro_Integritate"
                 maltype = "Webshell/Encoder"
+		date = "2022-06-08"
+		yarahub_reference_md5 = "ea4bfb665e54953275f8120844b2a819" // Viper webshell as sample
+		yarahub_uuid = "4e5ff008-0870-42e1-96c3-80354f152bde"
+		yarahub_license = "CC BY 4.0"
+		yarahub_reference_link = "https://github.com/ProIntegritate/Yara-rules/blob/master/Webshell.yara"
+		yarahub_rule_matching_tlp = "TLP:WHITE"
+		yarahub_rule_sharing_tlp = "TLP:WHITE"
+
         strings:
 		$php1 = "<?php" nocase ascii wide
 		$php2 = "Obfuscator" nocase ascii wide
@@ -56,13 +71,18 @@ rule PHP_Obfuscator{
 		not (uint16(0x00) == 0x5a4d) and
 		3 of ($php*)
 }
-
-
 rule PHP_Compressed_Encoded_Payload{
         meta:
                 description = "Compressed or Encoded PHP payload"
                 author = "@Pro_Integritate"
                 maltype = "Webshell/Encoder"
+		date = "2022-06-08"
+		yarahub_reference_md5 = "ea4bfb665e54953275f8120844b2a819" // Viper webshell as sample
+		yarahub_uuid = "6876854b-c11f-46d0-b446-718787791eb0"
+		yarahub_license = "CC BY 4.0"
+		yarahub_reference_link = "https://github.com/ProIntegritate/Yara-rules/blob/master/Webshell.yara"
+		yarahub_rule_matching_tlp = "TLP:WHITE"
+		yarahub_rule_sharing_tlp = "TLP:WHITE"
         strings:
 		$php = "<?php"
 		$decomp1 = "UncompressFile"
@@ -84,6 +104,14 @@ rule PHP_Emotet_Webshell{
                 description = "Emotet SAP Webshell as payload in Wordpress"
                 author = "@Pro_Integritate"
                 maltype = "Webshell/Botnet"
+		date = "2022-06-08"
+		yarahub_reference_md5 = "ea4bfb665e54953275f8120844b2a819" // Viper webshell as sample
+		yarahub_uuid = "2b48bf59-de67-46cc-abde-4cae246f5a98"
+		yarahub_license = "CC BY 4.0"
+		yarahub_reference_link = "https://github.com/ProIntegritate/Yara-rules/blob/master/Webshell.yara"
+		yarahub_rule_matching_tlp = "TLP:WHITE"
+		yarahub_rule_sharing_tlp = "TLP:WHITE"
+
         strings:
 		$php = "<?php"
 		$content1 = "$wp_kses_data"
@@ -99,6 +127,13 @@ rule ASP_Webshell{
                 description = "Generic ASP Webshell signature"
                 author = "@Pro_Integritate"
                 maltype = "Webshell"
+		date = "2022-06-08"
+		yarahub_reference_md5 = "ea4bfb665e54953275f8120844b2a819" // Viper webshell as sample
+		yarahub_uuid = "ecb1d2c2-8587-41b2-bc91-3cab0dd5feae"
+		yarahub_license = "CC BY 4.0"
+		yarahub_reference_link = "https://github.com/ProIntegritate/Yara-rules/blob/master/Webshell.yara"
+		yarahub_rule_matching_tlp = "TLP:WHITE"
+		yarahub_rule_sharing_tlp = "TLP:WHITE"
 
 	strings:
 		$php = "<?php" nocase ascii wide
@@ -139,6 +174,13 @@ rule JSP_Webshell{
                 description = "Generic JSP Webshell signature"
                 author = "@Pro_Integritate"
                 maltype = "Webshell"
+		date = "2022-06-08"
+		yarahub_reference_md5 = "ea4bfb665e54953275f8120844b2a819" // Viper webshell as sample
+		yarahub_uuid = "62f173f9-6e29-430b-980a-aafddcab0afc"
+		yarahub_license = "CC BY 4.0"
+		yarahub_reference_link = "https://github.com/ProIntegritate/Yara-rules/blob/master/Webshell.yara"
+		yarahub_rule_matching_tlp = "TLP:WHITE"
+		yarahub_rule_sharing_tlp = "TLP:WHITE"
 
         strings:
 		$php = "<?php" nocase ascii wide
@@ -170,14 +212,18 @@ rule JSP_Webshell{
 }
 
 
-
-
-
 rule CFM_Encoded_file{
         meta:
                 description = "Cold Fusion Encoded signature"
                 author = "@Pro_Integritate"
                 maltype = "Encoded Colf Fusion page"
+		date = "2022-06-08"
+		yarahub_reference_md5 = "ea4bfb665e54953275f8120844b2a819" // Viper webshell as sample
+		yarahub_uuid = "a422a898-7d6d-4ea2-9518-a0234f08e250"
+		yarahub_license = "CC BY 4.0"
+		yarahub_reference_link = "https://github.com/ProIntegritate/Yara-rules/blob/master/Webshell.yara"
+		yarahub_rule_matching_tlp = "TLP:WHITE"
+		yarahub_rule_sharing_tlp = "TLP:WHITE"
 
         strings:
                 $php = "?php" nocase ascii wide
@@ -195,6 +241,13 @@ rule CFM_Webshell{
                 description = "Generic CFM Webshell signature"
                 author = "@Pro_Integritate"
                 maltype = "Webshell"
+		date = "2022-06-08"
+		yarahub_reference_md5 = "ea4bfb665e54953275f8120844b2a819" // Viper webshell as sample
+		yarahub_uuid = "14561b6b-8677-4363-b84e-248b58db3df6"
+		yarahub_license = "CC BY 4.0"
+		yarahub_reference_link = "https://github.com/ProIntegritate/Yara-rules/blob/master/Webshell.yara"
+		yarahub_rule_matching_tlp = "TLP:WHITE"
+		yarahub_rule_sharing_tlp = "TLP:WHITE"
 
         strings:
                 $php = "?php" nocase ascii wide
