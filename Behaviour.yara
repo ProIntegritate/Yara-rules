@@ -1,4 +1,4 @@
-// Last update: 21:08 2021-10-20
+// Last update: 11:10 2022-07-08
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -106,6 +106,7 @@ rule Create_Process_Or_Shell_External_Commands{
 		$string9 = "DelegateCreateProcessA" nocase ascii wide
 		$string10 = "Application.Run" nocase ascii wide
 		$string11 = ".ShellExecute" nocase ascii wide
+		$string12 = "shell32.ShellExecute" nocase ascii wide
 	condition:
 		any of ($string*)
 }
@@ -1322,10 +1323,30 @@ rule UAC_Bypass_Schtasks{
 rule INFO_GoLang{
 	strings:    
 		$golang1 = "runtime.go" nocase ascii wide
-		$golang2 = "ddgs/vendor/golang.org/" nocase ascii wide
+		$golang2 = "golang.org" nocase ascii wide
 		$golang3 = "encoding/gob." nocase ascii wide
+		$golang4 = "Go build ID:" nocase ascii wide
+		$golang4 = "Go buildinf:" nocase ascii wide
+		$golang4 = "GOARCH="
+		$golang4 = "GOOS="
+		$golang4 = "GOAMD64="
+		$golang4 = ""
+
 	condition:
 		any of ($golang*)
+}
+
+rule REDTEAM_TOOL_SLIVER{
+	strings:    
+		$sliver1 = "github.com/bishopfox/sliver" nocase ascii wide
+		$sliver2 = "/sliver/client/" nocase ascii wide
+		$sliver3 = "sliverpb" nocase ascii wide
+		$sliver4 = "sliver.proto" nocase ascii wide
+		$sliver5 = "SliverRPC" nocase ascii wide
+		$sliver6 = "Sliver" nocase ascii wide
+
+	condition:
+		any of ($sliver*)
 }
 
 rule INFO_ATL_MFC_Trace{
