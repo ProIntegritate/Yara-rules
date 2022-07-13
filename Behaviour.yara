@@ -1,4 +1,4 @@
-// Last update: 11:10 2022-07-08
+// Last update: 13:50 2022-07-13
 // Author: "@Pro_Integritate"
 // Tested with: Yara 4.0.2
 // 
@@ -1326,11 +1326,10 @@ rule INFO_GoLang{
 		$golang2 = "golang.org" nocase ascii wide
 		$golang3 = "encoding/gob." nocase ascii wide
 		$golang4 = "Go build ID:" nocase ascii wide
-		$golang4 = "Go buildinf:" nocase ascii wide
-		$golang4 = "GOARCH="
-		$golang4 = "GOOS="
-		$golang4 = "GOAMD64="
-		$golang4 = ""
+		$golang5 = "Go buildinf:" nocase ascii wide
+		$golang6 = "GOARCH="
+		$golang7 = "GOOS="
+		$golang8 = "GOAMD64="
 
 	condition:
 		any of ($golang*)
@@ -1395,4 +1394,20 @@ rule INFO_Python{
 		$string4 = "def " nocase ascii wide
 	condition:
 		all of ($string*)
+}
+
+rule REDTEAM_TOOL_CHISELSTRIKE{
+	strings:    
+		$chiselstrike1 = "[-b64] [-xor <key>] -path <binary_path> [-args <binary_args>]" nocase ascii wide
+		$chiselstrike2 = "-b64: Optionnal flag parameter" nocase ascii wide
+		$chiselstrike3 = "-xor: Optionnal parameter indicating" nocase ascii wide
+		$chiselstrike4 = "-path: Mandatory parameter" nocase ascii wide
+		$chiselstrike5 = "-args: Optionnal parameter" nocase ascii wide
+		$chiselstrike6 = "Flangvik - Arno0x0x Edition - #NetLoader" nocase ascii wide
+		$chiselstrike7 = "All arguments are Base64 encoded" nocase ascii wide
+		$chiselstrike8 = "Damn, it failed, too bad" nocase ascii wide
+		$chiselstrike9 = {B8 57 00 07 80 C2 18 00}
+
+	condition:
+		6 of ($chiselstrike*)
 }
